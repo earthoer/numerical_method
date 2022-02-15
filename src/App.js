@@ -1,23 +1,60 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-
+import Homepage from './component/Homepage';
+import ListComponent from './component/Listcomponent'
+import {useNavigate ,Link, Route,Routes,BrowserRouter as Router} from 'react-router-dom'
+import Chapter1 from './component/ch1/Chapter1'
+import Bisection from './component/ch1/Bisection'
+import FalsePosition from './component/ch1/FalsePosition'
 function App() {
+  const ar = [
+    {name :"บทที่ 1" ,key: 1},
+    {name :"บทที่ 2",key: 2},
+    {name :"บทที่ 3",key: 3}
+  ]
+  const ar2 = [
+    {name :"Bisection Method" ,key: 1},
+    {name :"False position Method",key: 2},
+    {name :"Compitational Procedure",key: 3},
+    {name :"One-Point Iteration Method",key: 4},
+    {name :"False position Method",key: 5},
+  ]
+
+  // const history = useNavigate();
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Homepage />
+      {/* <button onClick={()=>history(-1)}>Back</button> */}
+      <Router>
+        <div>
+          <ul>
+            <li>
+              <Link to="/">home</Link>
+            </li>
+            <li>
+              <Link to="/chapter1/*">บทที่1</Link>
+            </li>
+          </ul>
+          <Routes>
+            <Route
+              path="/"
+              exact
+              element={
+                <div>
+                  <ListComponent item={ar} />
+                </div>
+              }
+            ></Route>
+            <Route path="/chapter1/*" element={<Chapter1 />}></Route>
+            <Route path="/chapter1/bisection" element={<Bisection />}></Route>
+            <Route
+              path="/chapter1/falseposition"
+              element={<FalsePosition />}
+            ></Route>
+          </Routes>
+        </div>
+      </Router>
     </div>
   );
 }
