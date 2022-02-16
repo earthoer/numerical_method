@@ -1,0 +1,22 @@
+.chart{
+  /* background-color:rgba(165, 42, 42, 0.198); */
+  border:1px solid;
+  box-shadow: 5px 5px 10px rgba(0,0,0,1);
+  /* border-width: 10px; */
+}
+
+
+.form{
+    
+    margin-bottom:100px;
+    margin-left:450px;
+    /* margin-right:100px; */
+    margin-top: 20px;
+    width:50%;
+    /* border:100px; */
+    /* background-color:red; */
+}
+button{
+    box-shadow: 0 2px 4px rgba(0,0,0,1);
+    cursor:pointer;
+}

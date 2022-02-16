@@ -1,39 +1,51 @@
 import { useState,useEffect } from "react";
 import { evaluate,parse,sqrt,abs } from "mathjs";
-import * as V from 'victory';
-import { VictoryChart } from "victory";
+// import 'Formcomponent.css'
+import './Formcomponent.css'
+import Chart from "./Chartcomponent";
+
 const Formcomponent = ()=>{
     const [equation,setEquation] = useState("")
     const [left,setleft] = useState("")
     const [right,setright] = useState("")
-    const [answer,setanswer] = useState([
-        {x:0,y:0}
-    ])
-    
+    const [answer,setanswer] = useState([])
+    const [error,seterror] = useState([])
+    const [fx,setfx] = useState([])
     const inputeq = (e) =>{setEquation(e.target.value)}
     const inputleft = (e) =>{setleft(e.target.value)}
     const inputright = (e) =>{setright(e.target.value)}
-    let arr = [];// 1,2,3
     
-
+  
+    let ar1  =[];
+    let ar2  =[];
+    let ar3  =[];
     // console.log(data)
     function geterror(x,y){
 
         return abs((x-y)/x)
     
     }
-    useEffect(()=>{
+    const onSubmitf=(e)=>{
+        e.preventDefault();
         if (equation.length > 0 && left.length > 0 && right.length > 0) 
         {
         
           try {
             let eq = "";
-            if (equation[0] === "-") {
-              eq = "x" + equation;
-            } else {
-              eq = "x+" + equation;
+            let eqt
+            // console.log(equation.indexOf('x'))
+            if (equation.indexOf('x')<0) {
+              if (equation[0] === "-") {
+                const teq = equation.substring(1);
+                eq = "x+" + teq;
+              } else {
+                eq = "x-" + equation;
+              }
+               eqt = parse(eq);
             }
-            let eqt = parse(eq);
+            else{
+                eqt = parse(equation)
+            }
             console.log(eqt.toString())
             let e = 100000;
             let eps =0.000001
@@ -45,127 +57,133 @@ const Formcomponent = ()=>{
             let l = Number(left);
             let r = Number(right);
             
-            while(e>eps){
-                // console.log(l," ",r)
-                let mid = (l+r)/2
-                let fm = eqt.evaluate({ x: mid })
-                let fl = eqt.evaluate({ x: l })
-                let fr = eqt.evaluate({ x: r })
+            while (e > eps) {
+              // console.log(l," ",r)
+              let mid = (l + r) / 2;
+              let fm = eqt.evaluate({ x: mid });
+              let fl = eqt.evaluate({ x: l });
+              let fr = eqt.evaluate({ x: r });
 
-                
-                const data = [
-                    {"mid":mid},
-                    {"f(m)":fm},
-                    {'r':r},
-                    {"f(r)":fr},
-                    {"l":l},
-                    {"f(l)":fl},
-                    {"e":e},
-                    {"fr*fm":fm*fr}
-                    
-                ]
-                // console.log(data)
-                // console.log(mid)
-                if(fr*fm>0){
-                    old = right
-                    r = mid
-                    e = geterror(mid,old)
-                    // e= e.im
-                    
-                    if(e<eps){
-                        console.log("case 1")
-                        break;
-                    }
+              const data = [
+                { mid: mid },
+                { "f(m)": fm },
+                { r: r },
+                { "f(r)": fr },
+                { l: l },
+                { "f(l)": fl },
+                { e: e },
+                { "fr*fm": fm * fr },
+              ];
+              console.log(data)
+              // console.log(mid)
+              if (fr * fm > 0) {
+                old = r;
+                r = mid;
+                e = geterror(mid, old);
+                // e= e.im
+
+                if (e < eps) {
+                  console.log("case 1");
+                  break;
                 }
-                else{
-                    old = left
-                    l = mid
-                    e = geterror(mid,old)
-                    // e=e.im
-                    if(e<eps){
-                        console.log("case 2")
-                        break;
-                    }
+              } else {
+                old = l;
+                l = mid;
+                e = geterror(mid, old);
+                // e=e.im
+                if (e < eps) {
+                  console.log("case 2");
+                  break;
                 }
-                ans = mid
-                arr.push({x:arr.length+1,y:ans})
-                
-                const t = {x:arr.length+1,y:ans}
-                setanswer(answer=>[...answer,t])
-                // console.log(arr)
-                if(i>0) {
-                    if(abs(ans-temp)<0.00002){
-                        state+=1;
-                    }
-                    temp = ans
+              }
+              const er = e;
+              ans = mid;
+              const d = [{ e: er }, { ans: ans }];
+              
+              ar1.push(ans)
+            //   setanswer((a) => [...a, ans]);
+            //   console.log(ar1);
+              ar2.push(er)
+              ar3.push(fm)
+            //   console.log(ar3)
+            //   seterror((a) => [...a, er]);
+            //   setfx((a) => [...a, fm]);
+
+              if (i > 0) {
+                if (abs(ans - temp) < 0.00002) {
+                  state += 1;
                 }
-                i++;
-                if(state>=10){
-                    console.log("case 3" )
-                    break;
-                }
-                // console.log("e : ",e,"eps : ",eps)
+                temp = ans;
+              }
+              i++;
+              if (state >= 10) {
+                console.log("case 3");
+                break;
+              }
+              // console.log("e : ",e,"eps : ",eps)
             }
             
 
             
-            console.log("answer : ", ans);
-            // setanswer(ans)
-            console.log("ans = ",answer)
+            // console.log("answer : ", ans);
+            // console.log("ans = ",answer)
+            setanswer(ar1)
+            seterror(ar2)
+            // console.log("ar3 : ",ar3)
+            setfx(ar3)
           } catch (e) {
             console.log(e);
           }
         }
-    },[equation,left,right])
-  
-    
-    // const data = arr.map((e,index)=>{
-        const data = []
-    // })
-    console.log(arr)
-    for(let i = 0;i<10;i++){
-        data.push(arr[i])
-        console.log(arr[0])
     }
+    const data = []
+    let datae =[]
+    const datafx = [];
+    useEffect(()=>{
+        setanswer([])
+        seterror([])
+        setfx([])
+    },[equation,left,right])
+    // console.log("ans = ",answer)
+    for(let i = 0;i<answer.length;i++){
+        data.push({y:answer[i],x:i+1})
+    }
+    for(let i = 0;i<data.length;i++){
+        data[i].y = data[i].y.toFixed(6)
+    }
+    for(let i = 0;i<error.length;i++){
+        datae.push({y:error[i],x:i+1})
+    }
+    for(let i = 0;i<fx.length;i++){
+        datafx.push({y:fx[i],x:i+1})
+    }
+    // for(let i = 0;i<datae.length;i++){
+    //     datae[i].y = datae[i].y.toFixed(6)
+    // }
+    // console.log(data)
+    
+    // console.log(data)
     return (
-      <div align="center">
+      <div align="center" className="form">
+        <div className="chart">
+          <Chart dataans={data} dataerror ={datae} datafx={datafx}></Chart>
+
+        </div>
+        <p> Answer: {answer[answer.length - 1]}</p>
+        <form onSubmit={onSubmitf}>
           <div>
-              {/* <VictoryChart>
-                  <V.VictoryBar data={data} x ="quarter" y = "earning"/>
-              </VictoryChart> */}
-              {/* <VictoryChart width={700}>
-                  <V.VictoryLine data={arr[0]
-                      
-                //       [
-                //       {x: 1, y: 1.75},
-                //       {x: 2, y: 1.625},
-                //       {x: 3, y: 1.5625},
-                //       {x: 4, y: 1.53125},
-                //       {x: 5, y: 1.515625},
-                //       {x: 6, y: 1.5078125},
-                //       {x: 7, y: 1.50390625},
-                //       {x: 8, y: 1.501953125},
-                //       {x: 9, y: 1.5009765625}
-                //   ]
-                  
-                  }/>
-              </VictoryChart> */}
+            <label>ใส่สมการ</label>
+            <input type="text" onChange={inputeq} />
           </div>
-        <p> Answer: {answer}</p>
-        <form>
-            <div>
-                <label>ใส่สมการ</label>
-                <input type ="text"  onChange={inputeq}/>
-            </div>
-            <div>
-                <label>ใส่ค่าด้านซ้าย</label>
-                <input type ="text"  onChange={inputleft}/>
-            </div>
-            <div>
-                <label>ใส่ค่าด้านขวา</label>
-                <input type ="text"  onChange={inputright}/>
-            </div>
-            <button>submit</button>
+          <div>
+            <label>ใส่ค่าด้านซ้าย</label>
+            <input type="text" onChange={inputleft} />
+          </div>
+          <div>
+            <label>ใส่ค่าด้านขวา</label>
+            <input type="text" onChange={inputright} />
+          </div>
+          <button type="submit">submit</button>
         </form>
       </div>
     );
