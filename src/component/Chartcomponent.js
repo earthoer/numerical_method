@@ -1,24 +1,18 @@
-import {
-    AnimatedAxis, // any of these can be non-animated equivalents
-    AnimatedGrid,
-    AnimatedLineSeries,
-    XYChart,
-    Tooltip,
-    PatternLines
-  } from "@visx/xychart";
+// import {
+//     AnimatedAxis, // any of these can be non-animated equivalents
+//     AnimatedGrid,
+//     AnimatedLineSeries,
+//     XYChart,
+//     Tooltip,
+//     PatternLines
+//   } from "@visx/xychart";
   import { Zoom } from "@visx/zoom";
-  import {Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    
-    Legend,} from 'chart.js/auto'
+  import {Chart as ChartJS,} from 'chart.js/auto'
+  import zoomPlugin from 'chartjs-plugin-zoom';
   import {Bar,Line,Pie,tooltips,Bubble,PolarArea, Scatter,Chart} from 'react-chartjs-2'
 
 //   import Chart from './Ch'
-
+  Chart.register(zoomPlugin)
   const Chartcomponent =({dataerror,dataans,datafx})=>{
     // var xValues = [50,60,70,80,90,100,110,120,130,140,150];
     // var yValues = [7,8,8,9,9,9,10,11,14,14,15];
@@ -105,10 +99,28 @@ import {
       const options={
           responsive:true,
           maintainAspectRatio:false,
-          
+          plugins: {
+            zoom: {
+              zoom: {
+                wheel: {
+                  enabled: true // SET SCROOL ZOOM TO TRUE
+                },
+                mode: "xy",
+                speed: 100
+              },
+              pan: {
+                enabled: true,
+                mode: "xy",
+                speed: 100
+              }
+            }
+          },
           scales: {
             y: {
-              stacked: true,
+              // stacked: true,
+              min:1,
+              max:10000,
+              type:"logarithmic",
               grid: {
                 display: true,
                 color: "rgba(255,99,132,0.2)"
@@ -121,12 +133,7 @@ import {
             }
           }
       }
-    // const a =  Chart("chart1",{
-    //     type:"line",
-    //     options:options,
-    //     data:data
-    // })
-      console.log(data)
+      // console.log(data)
     return (
         // <h1>h</h1>
         // className="graph"

@@ -4,7 +4,7 @@ import { evaluate,parse,sqrt,abs } from "mathjs";
 import './Formcomponent.css'
 import Chart from "./Chartcomponent";
 
-const Formcomponent = ()=>{
+const Formcomponent = (states)=>{
     const [equation,setEquation] = useState("")
     const [left,setleft] = useState("")
     const [right,setright] = useState("")
@@ -25,115 +25,111 @@ const Formcomponent = ()=>{
         return abs((x-y)/x)
     
     }
+    let st = JSON.stringify(Object.values(states))
+    st = st.slice(2,-2)
+    // console.log(st)
+    // console.log(['falsepositon'])
+    // console.log(st==='falsepositon')
     const onSubmitf=(e)=>{
         e.preventDefault();
-        if (equation.length > 0 && left.length > 0 && right.length > 0) 
-        {
-        
-          try {
-            let eq = "";
-            let eqt
-            // console.log(equation.indexOf('x'))
-            if (equation.indexOf('x')<0) {
-              if (equation[0] === "-") {
-                const teq = equation.substring(1);
-                eq = "x+" + teq;
-              } else {
-                eq = "x-" + equation;
-              }
-               eqt = parse(eq);
-            }
-            else{
-                eqt = parse(equation)
-            }
-            console.log(eqt.toString())
-            let e = 100000;
-            let eps =0.000001
-            let old = 0;
-            let ans =0;
-            let i =0;
-            let temp = 0;
-            let state = 0;
-            let l = Number(left);
-            let r = Number(right);
+        if(st==='bisection'){
+            console.log('bisection')
+            if (equation.length > 0 && left.length > 0 && right.length > 0) 
+            {
             
-            while (e > eps) {
-              // console.log(l," ",r)
-              let mid = (l + r) / 2;
-              let fm = eqt.evaluate({ x: mid });
-              let fl = eqt.evaluate({ x: l });
-              let fr = eqt.evaluate({ x: r });
-
-              const data = [
-                { mid: mid },
-                { "f(m)": fm },
-                { r: r },
-                { "f(r)": fr },
-                { l: l },
-                { "f(l)": fl },
-                { e: e },
-                { "fr*fm": fm * fr },
-              ];
-              console.log(data)
-              // console.log(mid)
-              if (fr * fm > 0) {
-                old = r;
-                r = mid;
-                e = geterror(mid, old);
-                // e= e.im
-
-                if (e < eps) {
-                  console.log("case 1");
-                  break;
+              try {
+                let eq = "";
+                let eqt
+    
+                if (equation.indexOf('x')<0) {
+                  if (equation[0] === "-") {
+                    const teq = equation.substring(1);
+                    eq = "x+" + teq;
+                  } else {
+                    eq = "x-" + equation;
+                  }
+                   eqt = parse(eq);
                 }
-              } else {
-                old = l;
-                l = mid;
-                e = geterror(mid, old);
-                // e=e.im
-                if (e < eps) {
-                  console.log("case 2");
-                  break;
+                else{
+                    eqt = parse(equation)
                 }
-              }
-              const er = e;
-              ans = mid;
-              const d = [{ e: er }, { ans: ans }];
-              
-              ar1.push(ans)
-            //   setanswer((a) => [...a, ans]);
-            //   console.log(ar1);
-              ar2.push(er)
-              ar3.push(fm)
-            //   console.log(ar3)
-            //   seterror((a) => [...a, er]);
-            //   setfx((a) => [...a, fm]);
-
-              if (i > 0) {
-                if (abs(ans - temp) < 0.00002) {
-                  state += 1;
+                console.log(eqt.toString())
+                let e = 100000;
+                let eps =0.000001
+                let old = 0;
+                let ans =0;
+                let i =0;
+                let temp = 0;
+                let state = 0;
+                let l = Number(left);
+                let r = Number(right);
+                
+                while (e > eps) {
+    
+                  let mid = (l + r) / 2;
+                  let fm = eqt.evaluate({ x: mid });
+                  let fl = eqt.evaluate({ x: l });
+                  let fr = eqt.evaluate({ x: r });
+    
+                  const data = [
+                    { mid: mid },
+                    { "f(m)": fm },
+                    { r: r },
+                    { "f(r)": fr },
+                    { l: l },
+                    { "f(l)": fl },
+                    { e: e },
+                    { "fr*fm": fm * fr },
+                  ];
+                  console.log(data)
+                  if (fr * fm > 0) {
+                    old = r;
+                    r = mid;
+                    e = geterror(mid, old);
+                    // e= e.im
+    
+                    if (e < eps) {
+                      console.log("case 1");
+                      break;
+                    }
+                  } else {
+                    old = l;
+                    l = mid;
+                    e = geterror(mid, old);
+                    // e=e.im
+                    if (e < eps) {
+                      console.log("case 2");
+                      break;
+                    }
+                  }
+                  const er = e;
+                  ans = mid;
+                  const d = [{ e: er }, { ans: ans }];             
+                  ar1.push(ans)
+                  ar2.push(er)
+                  ar3.push(fm)
+                  if (i > 0) {
+                    if (abs(ans - temp) < 0.00002) {
+                      state += 1;
+                    }
+                    temp = ans;
+                  }
+                  i++;
+                  if (state >= 10) {
+                    console.log("case 3");
+                    break;
+                  }
                 }
-                temp = ans;
+                setanswer(ar1)
+                seterror(ar2)
+                setfx(ar3)
+              } catch (e) {
+                console.log(e);
               }
-              i++;
-              if (state >= 10) {
-                console.log("case 3");
-                break;
-              }
-              // console.log("e : ",e,"eps : ",eps)
             }
-            
-
-            
-            // console.log("answer : ", ans);
-            // console.log("ans = ",answer)
-            setanswer(ar1)
-            seterror(ar2)
-            // console.log("ar3 : ",ar3)
-            setfx(ar3)
-          } catch (e) {
-            console.log(e);
-          }
+        }
+        else if(st==='falsepositon'){
+            console.log("false")
         }
     }
     const data = []
@@ -157,12 +153,7 @@ const Formcomponent = ()=>{
     for(let i = 0;i<fx.length;i++){
         datafx.push({y:fx[i],x:i+1})
     }
-    // for(let i = 0;i<datae.length;i++){
-    //     datae[i].y = datae[i].y.toFixed(6)
-    // }
-    // console.log(data)
-    
-    // console.log(data)
+
     return (
       <div align="center" className="form">
         <div className="chart">

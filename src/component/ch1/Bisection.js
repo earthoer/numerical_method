@@ -1,8 +1,8 @@
 import Formcomponent from "../Formcomponent"
 const Bisection = () =>{
-    console.log("bisection")
+    // console.log("bisection")
     return (<div>
-        <Formcomponent></Formcomponent>
+        <Formcomponent states = "bisection"></Formcomponent>
     </div>)
 }
 export default Bisection
