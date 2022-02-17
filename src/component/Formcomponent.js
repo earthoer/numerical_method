@@ -20,6 +20,20 @@ const Formcomponent = (states)=>{
     let ar2  =[];
     let ar3  =[];
     // console.log(data)
+    if (String.prototype.splice === undefined) {
+      /**
+       * Splices text within a string.
+       * @param {int} offset The position to insert the text at (before)
+       * @param {string} text The text to insert
+       * @param {int} [removeCount=0] An optional number of characters to overwrite
+       * @returns {string} A modified string containing the spliced text.
+       */
+      String.prototype.splice = function(offset, text, removeCount=0) {
+        let calculatedOffset = offset < 0 ? this.length + offset : offset;
+        return this.substring(0, calculatedOffset) +
+          text + this.substring(calculatedOffset + removeCount);
+      };
+    }
     function geterror(x,y){
 
         return abs((x-y)/x)
@@ -43,10 +57,18 @@ const Formcomponent = (states)=>{
     
                 if (equation.indexOf('x')<0) {
                   if (equation[0] === "-") {
-                    const teq = equation.substring(1);
+                    let teq = equation.substring(1);
+                    // teq = [teq.slice(0,1),'(',teq.slice(1).join('')]
+                    teq = teq.splice(0,'(').splice(teq.length+1,')')
                     eq = "x+" + teq;
                   } else {
-                    eq = "x-" + equation;
+                    let teq = equation
+                    teq = teq.splice(0,'(').splice(teq.length+1,')')
+                    console.log(teq)
+
+                    
+
+                    eq = "x-" + teq;
                   }
                    eqt = parse(eq);
                 }

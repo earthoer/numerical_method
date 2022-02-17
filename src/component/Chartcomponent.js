@@ -12,7 +12,7 @@
   import {Bar,Line,Pie,tooltips,Bubble,PolarArea, Scatter,Chart} from 'react-chartjs-2'
 
 //   import Chart from './Ch'
-  Chart.register(zoomPlugin)
+  // Chart.register(zoomPlugin)
   const Chartcomponent =({dataerror,dataans,datafx})=>{
     // var xValues = [50,60,70,80,90,100,110,120,130,140,150];
     // var yValues = [7,8,8,9,9,9,10,11,14,14,15];
