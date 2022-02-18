@@ -40,7 +40,8 @@
     x1 = Object.keys(x1).map((e) =>Number(x1[e]))
     x2 = Object.keys(x2).map((e) =>Number(x2[e]))
     x3 = Object.keys(x3).map((e) =>Number(x3[e]))
-  
+    const d = [{x1:x1},{x2:x2},{x3:x3},{label:labels}]
+    console.log(d)
     // console.log(x1)
     let data = {}
     
@@ -57,13 +58,13 @@
             // backgroundColor: ,
             borderColor: "red",
           },
-          {
-            label: "f(x)",
-            data: x3,
-            fill: false,
-            // backgroundColor: "rgba(75,192,192,0.2)",
-            borderColor: "blue",
-          },
+          // {
+          //   label: "f(x)",
+          //   data: x3,
+          //   fill: false,
+          //   // backgroundColor: "rgba(75,192,192,0.2)",
+          //   borderColor: "blue",
+          // },
           {
             label: "answer",
             data: x1,
@@ -143,6 +144,7 @@
                 option={options}
                 height={1000}
                 width={1500}
+                activedot={{r:8}}
             />
             {/* <canvas id="chart1" height="400px" width="800px"></canvas> */}
         </div>

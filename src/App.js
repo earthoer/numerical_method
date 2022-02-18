@@ -4,8 +4,12 @@ import Homepage from './component/Homepage';
 import ListComponent from './component/Listcomponent'
 import {useNavigate ,Link, Route,Routes,BrowserRouter as Router} from 'react-router-dom'
 import Chapter1 from './component/ch1/Chapter1'
+import Chapter2 from './component/ch2/Chapter2';
 import Bisection from './component/ch1/Bisection'
 import FalsePosition from './component/ch1/FalsePosition'
+import OnePoint from './component/ch1/OnePoint';
+import Newtonraphson from './component/ch1/Newtonraphson';
+import CramerRule from './component/ch2/CramerRule';
 function App() {
   const ar = [
     {name :"บทที่ 1" ,key: 1},
@@ -33,24 +37,68 @@ function App() {
               <Link to="/">home</Link>
             </li>
             <li>
-              <Link to="/chapter1/*">บทที่1</Link>
+              <Link to="/chapter1/*">Root of Equation</Link>
+            </li>
+            <li>
+              <Link to="/chapter2/*">Linear algebra</Link>
             </li>
           </ul>
           <Routes>
             <Route
               path="/"
               exact
+              // element={
+              //   <div>
+              //     <ListComponent item={ar} />
+              //   </div>
+              // }
+            ></Route>
+            <Route path="/chapter1/*" exact element={<Chapter1 />}></Route>
+            <Route
+              path="/chapter1/bisection"
               element={
                 <div>
-                  <ListComponent item={ar} />
+                  <Chapter1 />
+                  <Bisection />
                 </div>
               }
             ></Route>
-            <Route path="/chapter1/*" element={<Chapter1 />}></Route>
-            <Route path="/chapter1/bisection" element={<Bisection />}></Route>
             <Route
               path="/chapter1/falseposition"
-              element={<FalsePosition />}
+              element={
+                <div>
+                  <Chapter1 />
+                  <FalsePosition />
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter1/onepoint"
+              element={
+                <div>
+                  <Chapter1 />
+                  <OnePoint />
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter1/newton"
+              element={
+                <div>
+                  <Chapter1 />
+                  <Newtonraphson />
+                </div>
+              }
+            ></Route>
+            <Route path="/chapter2/*" exact element={<Chapter2 />}></Route>
+            <Route
+              path="/chapter2/cramer"
+              element={
+                <div>
+                  <Chapter2 />
+                  <CramerRule/>
+                </div>
+              }
             ></Route>
           </Routes>
         </div>
