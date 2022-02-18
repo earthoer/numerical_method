@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { evaluate,parse,sqrt,abs } from "mathjs";
+import { evaluate,parse,sqrt,abs,derivative } from "mathjs";
 // import 'Formcomponent.css'
 import './Formcomponent.css'
 import Chart from "./Chartcomponent";
@@ -15,7 +15,7 @@ const Formcomponent = (states)=>{
     const inputleft = (e) =>{setleft(e.target.value)}
     const inputright = (e) =>{setright(e.target.value)}
     
-  
+    let lr = false;
     let ar1  =[];
     let ar2  =[];
     let ar3  =[];
@@ -44,13 +44,30 @@ const Formcomponent = (states)=>{
     }
     let st = JSON.stringify(Object.values(states))
     st = st.slice(2,-2)
+    if(document.getElementById("l")){
+      if(st ==='bisection'){
+        lr = true;
+        console.log("lr : ",lr)
+        // document.getElementById("l").hidden = false;
+        
+      }
+      else if (st==='falseposition'){
+        lr = true;
+        // document.getElementById("l").hidden = false;
+      }
+      else{
+        console.log("st  :      ",st)
+        document.getElementById("l").style.visibility = "hidden";
+      }
+    }
+    
     // console.log(st)
     // console.log(['falsepositon'])
     // console.log(st==='falsepositon')
+    console.log('test')
     const onSubmitf=(event)=>{
         event.preventDefault();
-        let l = Number(left);
-        let r = Number(right);
+
         let e = 100000;
         let eps =0.000001;
         let old = 0;
@@ -59,6 +76,8 @@ const Formcomponent = (states)=>{
         let temp = 0;
         let state = 0;
         if(st==='bisection'){
+          let l = Number(left);
+          let r = Number(right);
             console.log('bisection')
             if (equation.length > 0 && left.length > 0 && right.length > 0) 
             {
@@ -70,16 +89,12 @@ const Formcomponent = (states)=>{
                 if (equation.indexOf('x')<0) {
                   if (equation[0] === "-") {
                     let teq = equation.substring(1);
-                    // teq = [teq.slice(0,1),'(',teq.slice(1).join('')]
                     teq = teq.splice(0,'(').splice(teq.length+1,')')
                     eq = "x+" + teq;
                   } else {
                     let teq = equation
                     teq = teq.splice(0,'(').splice(teq.length+1,')')
                     console.log(teq)
-
-                    
-
                     eq = "x-" + teq;
                   }
                    eqt = parse(eq);
@@ -152,7 +167,9 @@ const Formcomponent = (states)=>{
               }
             }
         }
-        else if(st==='falsepositon'){
+        else if(st==='falseposition'){
+          let l = Number(left);
+          let r = Number(right);
           console.log('falseposition')
           if (equation.length > 0 && left.length > 0 && right.length > 0) 
           {
@@ -264,9 +281,127 @@ const Formcomponent = (states)=>{
         }
         else if(st==='onepoint'){
           console.log(st)
+          try{
+            // console.log("eq : ",equation)
+            if(equation.length > 0){
+              let eq = "";
+              let eqt
+              if (equation.indexOf('x')>0) {
+                if (equation[0] === "-") {
+                  let teq = equation.substring(1);
+                  teq = teq.splice(0,'(').splice(teq.length+1,')')
+                  eq = "x+" + teq;
+                } else {
+                  let teq = equation
+                  teq = teq.splice(0,'(').splice(teq.length+1,')')
+                  console.log(teq)
+                  eq = "x-" + teq;
+                }
+                 eqt = parse(eq);
+              }
+              else{
+                  eqt = parse(equation)
+              }
+              console.log("before : ",equation)
+              console.log("after : ",eqt.toString())
+            setleft(0)
+            setright(0) 
+              let x = 0
+              while(e>eps){
+                old = x
+                x = eqt.evaluate({x:x})
+                e = geterror(x,old)
+
+                ans = old
+                if (i > 0) {
+                  if (abs(ans - temp) < 0.00002) {
+                    state += 1;
+                  }
+                  temp = ans;
+                }
+                i++;
+                if (state >= 5) {
+                  console.log("case 3");
+                  break;
+                }
+                ar1.push(ans)
+                if(i==1000){
+                  break;
+                }
+              }
+              setanswer(ar1)
+
+            }
+            
+          }
+          catch(e){
+            console.log(e)
+          }
+
         }
         else if(st==='newtonraphson'){
           console.log(st)
+          try{
+            console.log("eq : ",equation)
+            if(equation.length > 0){
+              let eq = "";
+              let eqt
+              if (equation.indexOf('x')>0) {
+                if (equation[0] === "-") {
+                  let teq = equation.substring(1);
+                  teq = teq.splice(0,'(').splice(teq.length+1,')')
+                  eq = "x+" + teq;
+                } else {
+                  let teq = equation
+                  teq = teq.splice(0,'(').splice(teq.length+1,')')
+                  console.log(teq)
+                  eq = "x-" + teq;
+                }
+                 eqt = parse(eq);
+              }
+              else{
+                  eqt = parse(equation)
+              }
+              console.log(eqt.toString())
+            setleft(0)
+            setright(0) 
+              let x = 0
+
+              while(e>eps){
+                let div = derivative(eqt,'x')
+                console.log(div.toString())
+
+
+                //difได้
+                old = x
+                x = eqt.evaluate({x:x})
+                e = geterror(x,old)
+
+                ans = old
+                if (i > 0) {
+                  if (abs(ans - temp) < 0.00002) {
+                    state += 1;
+                  }
+                  temp = ans;
+                }
+                i++;
+                if (state >= 5) {
+                  console.log("case 3");
+                  break;
+                }
+                ar1.push(ans)
+                if(i==1000){
+                  break;
+                }
+              }
+              setanswer(ar1)
+
+            }
+            
+          }
+          catch(e){
+            console.log(e)
+          }
         }
     }
     const data = []
@@ -296,23 +431,24 @@ const Formcomponent = (states)=>{
     return (
       <div align="center" className="form">
         <div className="chart">
-          <Chart dataans={data} dataerror ={datae} datafx={datafx}></Chart>
-
+          <Chart dataans={data} dataerror={datae} datafx={datafx}></Chart>
         </div>
         <p> Answer: {answer[answer.length - 1]}</p>
         <p> error: {error[error.length - 1]}</p>
         <form onSubmit={onSubmitf}>
           <div>
-            <label>ใส่สมการ</label>
+            <label>ใส่สมการ </label>
             <input type="text" onChange={inputeq} />
           </div>
-          <div>
-            <label>ใส่ค่าด้านซ้าย</label>
-            <input type="text" onChange={inputleft} />
-          </div>
-          <div>
-            <label>ใส่ค่าด้านขวา</label>
-            <input type="text" onChange={inputright} />
+          <div id="l" align="center">
+            <div >
+              <label>ใส่ค่าด้านซ้าย</label>
+              <input type="text" onChange={inputleft} />
+            </div>
+            <div>
+              <label >ใส่ค่าด้านขวา</label>
+              <input type="text" onChange={inputright} />
+            </div>
           </div>
           <button type="submit">submit</button>
         </form>

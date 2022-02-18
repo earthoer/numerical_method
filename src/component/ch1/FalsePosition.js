@@ -2,7 +2,7 @@ import Formcomponent from "../Formcomponent";
 
 const FalsePosition = () =>{
     return (<div>
-        <Formcomponent states ="falsepositon"/>
+        <Formcomponent states ="falseposition"/>
     </div>)
 }
 export default FalsePosition;
