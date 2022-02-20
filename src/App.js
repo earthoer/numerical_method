@@ -10,6 +10,10 @@ import FalsePosition from './component/ch1/FalsePosition'
 import OnePoint from './component/ch1/OnePoint';
 import Newtonraphson from './component/ch1/Newtonraphson';
 import CramerRule from './component/ch2/CramerRule';
+import Gauseeliminate from './component/ch2/Gausselimination';
+import GaussJordan from './component/ch2/GaussJordan';
+import LU from './component/ch2/LU';
+import Gausseliminate from './component/ch2/Gausselimination';
 function App() {
   const ar = [
     {name :"บทที่ 1" ,key: 1},
@@ -31,18 +35,20 @@ function App() {
       <Homepage />
       {/* <button onClick={()=>history(-1)}>Back</button> */}
       <Router>
-        <div>
-          <ul>
-            <li>
-              <Link to="/">home</Link>
-            </li>
-            <li>
-              <Link to="/chapter1/*">Root of Equation</Link>
-            </li>
-            <li>
-              <Link to="/chapter2/*">Linear algebra</Link>
-            </li>
-          </ul>
+        <div className="home">
+          <div>
+            <ul>
+              <li>
+                <Link to="/">home</Link>
+              </li>
+              <li className="a">
+                <Link to="/chapter1/*">Root of Equation</Link>
+              </li>
+              <li className="a">
+                <Link to="/chapter2/*">Linear algebra</Link>
+              </li>
+            </ul>
+          </div>
           <Routes>
             <Route
               path="/"
@@ -96,7 +102,35 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <CramerRule/>
+                  <CramerRule />
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter2/gausselimination"
+              element={
+                <div>
+                  <Chapter2 />
+                  <Gausseliminate />
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter2/gaussjordan"
+              element={
+                <div>
+                  <Chapter2 />
+                  <GaussJordan />
+                </div>
+              }
+            ></Route>
+
+            <Route
+              path="/chapter2/lu"
+              element={
+                <div>
+                  <Chapter2 />
+                  <LU />
                 </div>
               }
             ></Route>

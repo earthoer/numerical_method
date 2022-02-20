@@ -6,15 +6,15 @@ const Chapter2 =()=>{
                   <li>
                     <Link to="/chapter2/cramer">Cramer's Rule Method</Link>
                   </li>
-                  {/* <li>
-                    <Link to="/chapter1/falseposition">False position Method</Link>
+                  <li>
+                    <Link to="/chapter2/gausselimination">Gauss elimination Method</Link>
                   </li>
                   <li>
-                    <Link to="/chapter1/onepoint">One Point iteration Method</Link>
+                    <Link to="/chapter2/gaussjordan">Gauss Jordan Method</Link>
                   </li>
                   <li>
-                    <Link to="/chapter1/newton">False Newton Raphson Method</Link>
-                  </li> */}
+                    <Link to="/chapter2/lu">LU Decomposition Method</Link>
+                  </li>
               </ul>
          </div>
          )

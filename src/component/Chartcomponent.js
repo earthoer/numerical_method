@@ -75,7 +75,7 @@
           },
           {
             label: "",
-            data: [,-1,-0.5,0,1,2],
+            data: [,-1,-0.5,0,1,2,4,5],
             fill: false,
             // backgroundColor: "rgba(75,192,192,0.2)",
             borderColor: "white",

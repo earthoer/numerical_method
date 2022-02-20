@@ -1,8 +1,12 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect, createElement } from "react";
 import { evaluate,parse,sqrt,abs,derivative } from "mathjs";
 // import 'Formcomponent.css'
 import './Formcomponent.css'
+// import '../../App.css'
 import Chart from "./Chartcomponent";
+import Newtonraphson from "./ch1/Newtonraphson";
+import Select from 'react-select'
+// import {MathComponent} from 'mathjax-react'
 
 const Formcomponent = (states)=>{
     const [equation,setEquation] = useState("")
@@ -11,11 +15,20 @@ const Formcomponent = (states)=>{
     const [answer,setanswer] = useState([])
     const [error,seterror] = useState([])
     const [fx,setfx] = useState([])
+    const [xcount,setxcount] = useState(0)
+    const [arans,setarans] = useState([])
+    const inputxcount = (e)=>{setxcount(e.target.value)}
     const inputeq = (e) =>{setEquation(e.target.value)}
     const inputleft = (e) =>{setleft(e.target.value)}
-    const inputright = (e) =>{setright(e.target.value)}
+    const inputright = (e) =>{setright(e.target.value)} 
+    const [equation1,setEquation1] = useState("")
+    const [equation2,setEquation2] = useState("")
+    const [answer1,setanswer1] = useState("")
+    const [answer2,setanswer2] = useState("")
     
-    let lr = false;
+    
+    let leftinput =""
+    let rightinput =""
     let ar1  =[];
     let ar2  =[];
     let ar3  =[];
@@ -44,27 +57,40 @@ const Formcomponent = (states)=>{
     }
     let st = JSON.stringify(Object.values(states))
     st = st.slice(2,-2)
+
+    let ep = 1
+    if(st ==='bisection'||st==='falseposition'||st==='onepoint'||st==="newtonraphson"){
+      ep = 1;
+    }
+    else{
+      ep = 2;
+    }
+  if(ep===1){
     if(document.getElementById("l")){
       if(st ==='bisection'){
-        lr = true;
-        console.log("lr : ",lr)
-        // document.getElementById("l").hidden = false;
-        
+        leftinput = "ใส่ค่าด้านซ้าย"
+        rightinput = "ใส่ค่าด้านขวา"
       }
       else if (st==='falseposition'){
-        lr = true;
-        // document.getElementById("l").hidden = false;
+        leftinput = "ใส่ค่าด้านซ้าย"
+        rightinput = "ใส่ค่าด้านขวา"
       }
-      else{
+      else if(st ==='onepoint'){
         console.log("st  :      ",st)
-        document.getElementById("l").style.visibility = "hidden";
+      }
+      else if(st ==='newtonraphson'){
+        console.log("st  :      ",st)
+        leftinput = "ใส่ค่าเริ่มต้น"
       }
     }
-    
-    // console.log(st)
-    // console.log(['falsepositon'])
-    // console.log(st==='falsepositon')
-    console.log('test')
+  }
+  else if(ep===2){
+    console.log(ep)
+    // if(document.getElementById("roote")){
+    //   document.getElementById("roote").style.visibility = "hidden";
+    // }
+  }
+
     const onSubmitf=(event)=>{
         event.preventDefault();
 
@@ -304,8 +330,8 @@ const Formcomponent = (states)=>{
               }
               console.log("before : ",equation)
               console.log("after : ",eqt.toString())
-            setleft(0)
-            setright(0) 
+            // setleft(0)
+            // setright(0) 
               let x = 0
               while(e>eps){
                 old = x
@@ -325,11 +351,13 @@ const Formcomponent = (states)=>{
                   break;
                 }
                 ar1.push(ans)
+                ar2.push(e)
                 if(i==1000){
                   break;
                 }
               }
               setanswer(ar1)
+              seterror(ar2)
 
             }
             
@@ -363,25 +391,43 @@ const Formcomponent = (states)=>{
                   eqt = parse(equation)
               }
               console.log(eqt.toString())
-            setleft(0)
-            setright(0) 
-              let x = 0
+              let s = Number(left);
+              let x = s
+              let div = derivative(eqt,'x')
+              console.log("div : ",div.toString())
+              let deltax = -(eqt.evaluate({x:x})/div.evaluate({x:x}))
+              let newx = x + deltax
+              e  =geterror(newx,x)
+              x = newx
+              ar1.push(x)
+              ar2.push(e)
+              const data = [
+                {x:x},
+                {deltax:deltax},
+                {e,e},
 
+              ];
+              console.log(data)
               while(e>eps){
-                let div = derivative(eqt,'x')
-                console.log(div.toString())
-
-
-                //difได้
-                old = x
-                x = eqt.evaluate({x:x})
-                e = geterror(x,old)
-
-                ans = old
+                deltax = -(eqt.evaluate({x:x})/div.evaluate({x:x}))
+                newx = x + deltax;
+                e = geterror(newx,x)
+                x =newx
+                ans = x
+                const data = [
+                  {x:x},
+                  {deltax:deltax},
+                  {e,e},
+  
+                ];
+                console.log(data)
                 if (i > 0) {
                   if (abs(ans - temp) < 0.00002) {
                     state += 1;
                   }
+                  temp = ans;
+                }
+                else{
                   temp = ans;
                 }
                 i++;
@@ -390,17 +436,24 @@ const Formcomponent = (states)=>{
                   break;
                 }
                 ar1.push(ans)
+                ar2.push(e)
                 if(i==1000){
                   break;
                 }
               }
               setanswer(ar1)
-
+              seterror(ar2)
             }
             
           }
           catch(e){
             console.log(e)
+          }
+        }
+        else if(ep ==2){
+          // setarans(arrans)
+          if(st=='cramer'){
+            
           }
         }
     }
@@ -412,9 +465,9 @@ const Formcomponent = (states)=>{
         seterror([])
         setfx([])
     },[equation,left,right])
-    console.log("ans = ",answer)
-    console.log("error = ",error)
-    console.log("fx = ",fx)
+    // console.log("ans = ",answer)
+    // console.log("error = ",error)
+    // console.log("fx = ",fx)
     for(let i = 0;i<answer.length;i++){
         data.push({y:answer[i],x:i+1})
     }
@@ -427,31 +480,75 @@ const Formcomponent = (states)=>{
     for(let i = 0;i<fx.length;i++){
         datafx.push({y:fx[i],x:i+1})
     }
+    const options =[
+      {value:'2',label:'2'},
+      {value:'3',label:'3'},
+      {value:'4',label:'4'},
+    ]
 
     return (
       <div align="center" className="form">
         <div className="chart">
           <Chart dataans={data} dataerror={datae} datafx={datafx}></Chart>
         </div>
+        {/* <MathComponent tex={String.raw`\int_0^1 x^2\ dx`} /> */}
         <p> Answer: {answer[answer.length - 1]}</p>
         <p> error: {error[error.length - 1]}</p>
-        <form onSubmit={onSubmitf}>
+        {ep === 1 && (
           <div>
-            <label>ใส่สมการ </label>
-            <input type="text" onChange={inputeq} />
+            <form onSubmit={onSubmitf} id="roote">
+              <div>
+                <label>ใส่สมการ </label>
+                <input type="text" onChange={inputeq} />
+              </div>
+              {st !== "onepoint" && (
+                <div align="center">
+                  <div id="l">
+                    <label>{leftinput}</label>
+                    <input type="text" onChange={inputleft} />
+                  </div>
+                  {st !== "newtonraphson" && (
+                    <div id="r">
+                      <label>{rightinput}</label>
+                      <input type="text" onChange={inputright} />
+                    </div>
+                  )}
+                </div>
+              )}
+              <button type="submit">submit</button>
+            </form>
           </div>
-          <div id="l" align="center">
-            <div >
-              <label>ใส่ค่าด้านซ้าย</label>
-              <input type="text" onChange={inputleft} />
-            </div>
-            <div>
-              <label >ใส่ค่าด้านขวา</label>
-              <input type="text" onChange={inputright} />
-            </div>
+        )}
+        {ep === 2 && (
+          <div>
+            <form onSubmit={onSubmitf} id="linear">
+              <Select options={options} className="select"/>
+              {/* <div>
+                <label>Choose a dimention:</label>
+                <select id="dimention">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              {document.getElementById("dimention") && (
+                <div>
+                  {}
+                  {document.getElementById("dimention") === "3" && (
+                    <div>
+                      <h1>3</h1>
+                    </div>
+                  )}
+                  {document.getElementById("dimention") === "4" && (
+                    <div>
+                      <h1>4</h1>
+                    </div>
+                  )}
+                </div>
+              )} */}
+              <button type="submit">submit</button>
+            </form>
           </div>
-          <button type="submit">submit</button>
-        </form>
+        )}
       </div>
     );
 }
