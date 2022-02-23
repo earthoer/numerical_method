@@ -1,12 +1,12 @@
 import { useState,useEffect, createElement } from "react";
-import { evaluate,parse,sqrt,abs,derivative } from "mathjs";
+import { evaluate,parse,sqrt,abs,derivative,format} from "mathjs";
 // import 'Formcomponent.css'
 import './Formcomponent.css'
 // import '../../App.css'
 import Chart from "./Chartcomponent";
 import Newtonraphson from "./ch1/Newtonraphson";
 import Select from 'react-select'
-// import {MathComponent} from 'mathjax-react'
+import {MathJax,MathJaxContext} from "better-react-mathjax"
 
 const Formcomponent = (states)=>{
     const [equation,setEquation] = useState("")
@@ -54,6 +54,9 @@ const Formcomponent = (states)=>{
     }
     function getfalsepos(xl,xr,fxl,fxr){
       return ((xl*fxr)-(xr*fxl))/(fxr-fxl)
+    }
+    const dimentions = (e)=>{
+      console.log("test select dimention : " ,e.value)
     }
     let st = JSON.stringify(Object.values(states))
     st = st.slice(2,-2)
@@ -185,6 +188,7 @@ const Formcomponent = (states)=>{
                     break;
                   }
                 }
+                
                 setanswer(ar1)
                 seterror(ar2)
                 setfx(ar3)
@@ -471,6 +475,7 @@ const Formcomponent = (states)=>{
     for(let i = 0;i<answer.length;i++){
         data.push({y:answer[i],x:i+1})
     }
+    // [{1.2,1},{1.3,2}]
     for(let i = 0;i<data.length;i++){
         data[i].y = data[i].y.toFixed(6)
     }
@@ -485,9 +490,23 @@ const Formcomponent = (states)=>{
       {value:'3',label:'3'},
       {value:'4',label:'4'},
     ]
-
+    // const mj =(tex)=>{
+    //   return MathJax.tex2svg(tex,{em:16,ex:6,display:false});
+    // }
+    // // {mj(parse(equation).toTex({parenthesis: 'keep'}))}
+    // try{
+    //   const mathjax = document.getElementById("mathjax")
+    // mathjax.innerHTML = '';
+    // mathjax.appendChild(mj(parse(equation).toTex({parenthesis: 'keep'})))
+    // }
+    // catch(e){
+    //   console.log(e)
+    // }
     return (
       <div align="center" className="form">
+        <MathJaxContext>
+          <MathJax tex={String(equation)}></MathJax>
+        </MathJaxContext>
         <div className="chart">
           <Chart dataans={data} dataerror={datae} datafx={datafx}></Chart>
         </div>
@@ -522,7 +541,7 @@ const Formcomponent = (states)=>{
         {ep === 2 && (
           <div>
             <form onSubmit={onSubmitf} id="linear">
-              <Select options={options} className="select"/>
+              <Select options={options} className="select" onChange={dimentions}/>
               {/* <div>
                 <label>Choose a dimention:</label>
                 <select id="dimention">

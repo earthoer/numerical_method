@@ -24,9 +24,9 @@
   color: white;
 }
 
-.App-link {
+/* .App-link {
   color: #61dafb;
-}
+} */
 
 @keyframes App-logo-spin {
   from {
@@ -41,6 +41,7 @@
   flex-flow:row;
 }
 button{
+  
   box-shadow: 0 2px 4px rgba(0,0,0,1);
   cursor:pointer;
   margin-top: 10px;
@@ -51,8 +52,8 @@ button{
   font-size:15px;
 }
 .chart{
- 
-   border:1px solid black;
+  position:relative;
+  border:1.5px solid black;
   box-shadow: 5px 5px 10px rgba(0,0,0,1); 
   /* margin-top:-10px;  */
 
@@ -60,9 +61,10 @@ button{
 .form{
     
   margin-bottom:100px;
-  margin-left:200px;
+  margin-left:260px;
+  
   margin-top:  0px;
-  width:80%;
+  width:85%;
   
 }
 ul{
@@ -81,4 +83,8 @@ li{
   text-decoration: none;
 
   
+}
+Link{
+  color:black;
+  text-decoration:none;
 }

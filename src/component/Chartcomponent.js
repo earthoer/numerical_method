@@ -10,7 +10,8 @@
   import {Chart as ChartJS,} from 'chart.js/auto'
   import zoomPlugin from 'chartjs-plugin-zoom';
   import {Bar,Line,Pie,tooltips,Bubble,PolarArea, Scatter,Chart} from 'react-chartjs-2'
-
+import { ContextExclusionPlugin } from "webpack";
+let delayed
 //   import Chart from './Ch'
   // Chart.register(zoomPlugin)
   const Chartcomponent =({dataerror,dataans,datafx})=>{
@@ -72,6 +73,7 @@
             backgroundColor: "#CCFFCC",
             borderColor: "green",
             // borderWidth:"3",
+            tension:0.45
           },
           {
             label: "",
@@ -99,7 +101,24 @@
     
       const options={
           responsive:true,
+          // radius:0,
+          // hoverRadius:12,
+          tension:10,
+          hitRadius:20,
+          // hoverRadius:100,
           maintainAspectRatio:false,
+          animation:{
+            onComplete:()=>{
+              delayed =true;
+            },
+            delay:(context)=>{
+              let delay =0;
+              if(context.type ==="data" && context.mode==="default" &&!delayed){
+                delay = context.dataIndex*300+context.datasetIndex*100
+              }
+              return delay;
+            },
+          },
           plugins: {
             zoom: {
               zoom: {
@@ -134,6 +153,7 @@
             }
           }
       }
+    
       // console.log(data)
     return (
         // <h1>h</h1>
@@ -144,7 +164,9 @@
                 option={options}
                 height={1000}
                 width={1500}
-                activedot={{r:8}}
+                activedot={{r:8}
+                
+              }
             />
             {/* <canvas id="chart1" height="400px" width="800px"></canvas> */}
         </div>
