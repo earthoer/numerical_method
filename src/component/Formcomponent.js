@@ -1,5 +1,5 @@
 import { useState,useEffect, createElement } from "react";
-import { evaluate,parse,sqrt,abs,derivative,format} from "mathjs";
+import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index} from "mathjs";
 // import 'Formcomponent.css'
 import './Formcomponent.css'
 // import '../../App.css'
@@ -21,11 +21,11 @@ const Formcomponent = (states)=>{
     const inputeq = (e) =>{setEquation(e.target.value)}
     const inputleft = (e) =>{setleft(e.target.value)}
     const inputright = (e) =>{setright(e.target.value)} 
-    const [equation1,setEquation1] = useState("")
+    const [equationans,setEquationans] = useState("")
     const [equation2,setEquation2] = useState("")
     const [answer1,setanswer1] = useState("")
     const [answer2,setanswer2] = useState("")
-    
+    const inputeqans = (e)=>{setEquationans(e.target.value)}
     
     let leftinput =""
     let rightinput =""
@@ -336,7 +336,7 @@ const Formcomponent = (states)=>{
               console.log("after : ",eqt.toString())
             // setleft(0)
             // setright(0) 
-              let x = 0
+              let x = 0.1
               while(e>eps){
                 old = x
                 x = eqt.evaluate({x:x})
@@ -457,7 +457,28 @@ const Formcomponent = (states)=>{
         else if(ep ==2){
           // setarans(arrans)
           if(st=='cramer'){
+           try{
+             let eq = JSON.parse(equation)
+             let eqans = JSON.parse(equationans)
+            let mata = matrix(eq)
+            let metb = matrix(eqans)
+            let contain = []
+            let row = 0;
+            for(let i =0;i<100;i++){
+              if(equation[i]===']' ){
+                break;
+              }
+              else if(equation[i]!=='['&&equation[i]!==','){
+                // console.log("test : ",equation[i])
+                row++;
+              }
+            }
             
+            console.log("row : ",row)
+           }
+           catch(e){
+             console.log(e)
+           }
           }
         }
     }
@@ -490,31 +511,29 @@ const Formcomponent = (states)=>{
       {value:'3',label:'3'},
       {value:'4',label:'4'},
     ]
-    // const mj =(tex)=>{
-    //   return MathJax.tex2svg(tex,{em:16,ex:6,display:false});
-    // }
-    // // {mj(parse(equation).toTex({parenthesis: 'keep'}))}
-    // try{
-    //   const mathjax = document.getElementById("mathjax")
-    // mathjax.innerHTML = '';
-    // mathjax.appendChild(mj(parse(equation).toTex({parenthesis: 'keep'})))
-    // }
-    // catch(e){
-    //   console.log(e)
-    // }
+    const mt = (eq)=>{
+      try{
+        return <td><nobr><MathJax dynamic>{"\\("+parse(eq.toString().replace(/\r/g,"")).toTex({parenthesis: 'keep',implicit: 'show'})+"\\)"}</MathJax></nobr></td>
+      }
+      catch(e){
+        return(<MathJax dynamic >{e.toString}</MathJax>)
+      }
+    }
     return (
       <div align="center" className="form">
-        <MathJaxContext>
-          <MathJax tex={String(equation)}></MathJax>
-        </MathJaxContext>
         <div className="chart">
           <Chart dataans={data} dataerror={datae} datafx={datafx}></Chart>
         </div>
         {/* <MathComponent tex={String.raw`\int_0^1 x^2\ dx`} /> */}
-        <p> Answer: {answer[answer.length - 1]}</p>
-        <p> error: {error[error.length - 1]}</p>
+
         {ep === 1 && (
           <div>
+            <MathJaxContext>
+              <p>
+                Question : {mt(equation)} Answer: {answer[answer.length - 1]}
+              </p>
+            </MathJaxContext>
+            <p> error: {error[error.length - 1]}</p>
             <form onSubmit={onSubmitf} id="roote">
               <div>
                 <label>ใส่สมการ </label>
@@ -540,31 +559,25 @@ const Formcomponent = (states)=>{
         )}
         {ep === 2 && (
           <div>
+            <MathJaxContext>
+              <p>
+                Question : {mt(equation)} ,{mt(equationans)} Answer: {answer[answer.length - 1]}
+              </p>
+            </MathJaxContext>
+            <p> error: {error[error.length - 1]}</p>
             <form onSubmit={onSubmitf} id="linear">
-              <Select options={options} className="select" onChange={dimentions}/>
-              {/* <div>
-                <label>Choose a dimention:</label>
-                <select id="dimention">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
+              {/* <Select options={options} className="select" onChange={dimentions}/> */}
+              <div>
+                <label>ใส่เมททริก A</label>
+                <input type="text" onChange={inputeq} />
               </div>
-              {document.getElementById("dimention") && (
-                <div>
-                  {}
-                  {document.getElementById("dimention") === "3" && (
-                    <div>
-                      <h1>3</h1>
-                    </div>
-                  )}
-                  {document.getElementById("dimention") === "4" && (
-                    <div>
-                      <h1>4</h1>
-                    </div>
-                  )}
-                </div>
-              )} */}
+              <div>
+                <label>ใส่เมททริก B</label>
+                <input type="text" onChange={inputeqans} />
+              </div>
+              <br/>
               <button type="submit">submit</button>
+              
             </form>
           </div>
         )}

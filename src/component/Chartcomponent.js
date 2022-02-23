@@ -7,13 +7,13 @@
 //     PatternLines
 //   } from "@visx/xychart";
   import { Zoom } from "@visx/zoom";
-  import {Chart as ChartJS,} from 'chart.js/auto'
+  import {Chart as ChartJS,LineElement,CategoryScale,LinearScale,PointElement} from 'chart.js'
   import zoomPlugin from 'chartjs-plugin-zoom';
   import {Bar,Line,Pie,tooltips,Bubble,PolarArea, Scatter,Chart} from 'react-chartjs-2'
 import { ContextExclusionPlugin } from "webpack";
 let delayed
 //   import Chart from './Ch'
-  // Chart.register(zoomPlugin)
+  ChartJS.register(zoomPlugin,LineElement,CategoryScale,LinearScale,PointElement)
   const Chartcomponent =({dataerror,dataans,datafx})=>{
     // var xValues = [50,60,70,80,90,100,110,120,130,140,150];
     // var yValues = [7,8,8,9,9,9,10,11,14,14,15];
@@ -75,13 +75,13 @@ let delayed
             // borderWidth:"3",
             tension:0.45
           },
-          {
-            label: "",
-            data: [,-1,-0.5,0,1,2,4,5],
-            fill: false,
-            // backgroundColor: "rgba(75,192,192,0.2)",
-            borderColor: "white",
-          },
+          // {
+          //   label: "",
+          //   data: [,-1,-0.5,0,1,2,4,5],
+          //   fill: false,
+          //   // backgroundColor: "rgba(75,192,192,0.2)",
+          //   borderColor: "white",
+          // },
         ],
       };
     } else {
@@ -136,10 +136,18 @@ let delayed
             }
           },
           scales: {
+
+            // yAxes:[{
+            //   display:true,
+            //   tick:{
+            //     suggestMin:0,
+            //     suggestMax:100,
+            //   }
+            // }],
             y: {
               // stacked: true,
-              min:1,
-              max:10000,
+              suggestMin:0,
+              suggestMax:20,
               type:"logarithmic",
               grid: {
                 display: true,

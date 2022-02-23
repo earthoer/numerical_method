@@ -59,18 +59,31 @@ button{
 
 }
 .form{
-    
-  margin-bottom:100px;
-  margin-left:260px;
   
+  margin-bottom:100px;
+  margin-left: -80px;;
+  position:relative;
+  align-items: center;
   margin-top:  0px;
-  width:85%;
+  width: 700;
   
 }
 ul{
+  display: flex;
+  flex-flow:row;
   list-style-type:none;
   margin:0;
   padding: 5px;
+  position: relative;
+  width:max-content;
+  border:0.5px solid black;
+  background-color:#61dafb;
+}
+.main{
+  list-style-type:none;
+  margin:0;
+  padding: 5px;
+  position: relative;
   width:100%;
   border:0.5px solid black;
   background-color:#61dafb;

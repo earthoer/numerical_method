@@ -37,7 +37,7 @@ function App() {
       <Router>
         <div className="home">
           <div>
-            <ul>
+            <ul className="main">
               <li>
                 <Link to="/">home</Link>
               </li>
