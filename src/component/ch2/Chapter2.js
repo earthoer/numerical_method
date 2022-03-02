@@ -15,6 +15,12 @@ const Chapter2 =()=>{
                   <li>
                     <Link to="/chapter2/lu">LU Decomposition Method</Link>
                   </li>
+                  <li>
+                    <Link to="/chapter2/jacobi">Jacobi Iteration Method</Link>
+                  </li>
+                  <li>
+                    <Link to="/chapter2/seidal">Gauss-Seidal Method</Link>
+                  </li>
               </ul>
          </div>
          )

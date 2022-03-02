@@ -14,6 +14,8 @@ import Gauseeliminate from './component/ch2/Gausselimination';
 import GaussJordan from './component/ch2/GaussJordan';
 import LU from './component/ch2/LU';
 import Gausseliminate from './component/ch2/Gausselimination';
+import Gaussseidal from './component/ch2/Gaussseidel';
+import Jacobi from './component/ch2/Jacobi';
 function App() {
   const ar = [
     {name :"บทที่ 1" ,key: 1},
@@ -131,6 +133,24 @@ function App() {
                 <div>
                   <Chapter2 />
                   <LU />
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter2/jacobi"
+              element={
+                <div>
+                  <Chapter2 />
+                  <Jacobi/>
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter2/seidal"
+              element={
+                <div>
+                  <Chapter2 />
+                  <Gaussseidal/>
                 </div>
               }
             ></Route>

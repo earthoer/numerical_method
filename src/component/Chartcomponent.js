@@ -14,6 +14,7 @@ import { ContextExclusionPlugin } from "webpack";
 let delayed
 //   import Chart from './Ch'
   ChartJS.register(zoomPlugin,LineElement,CategoryScale,LinearScale,PointElement)
+  
   const Chartcomponent =({dataerror,dataans,datafx})=>{
     // var xValues = [50,60,70,80,90,100,110,120,130,140,150];
     // var yValues = [7,8,8,9,9,9,10,11,14,14,15];
@@ -98,7 +99,13 @@ let delayed
         ],
       };
     }
-    
+    const tooltipline ={
+      id:'tooltipLine',
+      beforeDraw:chart=>{
+        const ctx = chart.ctx;
+        console.log(chart)
+      }
+    }
       const options={
           responsive:true,
           // radius:0,
@@ -106,19 +113,20 @@ let delayed
           tension:10,
           hitRadius:20,
           // hoverRadius:100,
+        
           maintainAspectRatio:false,
-          animation:{
-            onComplete:()=>{
-              delayed =true;
-            },
-            delay:(context)=>{
-              let delay =0;
-              if(context.type ==="data" && context.mode==="default" &&!delayed){
-                delay = context.dataIndex*300+context.datasetIndex*100
-              }
-              return delay;
-            },
-          },
+          // animation:{
+          //   onComplete:()=>{
+          //     delayed =true;
+          //   },
+          //   delay:(context)=>{
+          //     let delay =0;
+          //     if(context.type ==="data" && context.mode==="default" &&!delayed){
+          //       delay = context.dataIndex*300+context.datasetIndex*100
+          //     }
+          //     return delay;
+          //   },
+          // },
           plugins: {
             zoom: {
               zoom: {
@@ -137,28 +145,22 @@ let delayed
           },
           scales: {
 
-            // yAxes:[{
-            //   display:true,
-            //   tick:{
-            //     suggestMin:0,
-            //     suggestMax:100,
+    
+            // y: {
+
+            //   suggestMin:0,
+            //   suggestMax:20,
+            //   type:"logarithmic",
+            //   grid: {
+            //     display: true,
+            //     color: "rgba(255,99,132,0.2)"
             //   }
-            // }],
-            y: {
-              // stacked: true,
-              suggestMin:0,
-              suggestMax:20,
-              type:"logarithmic",
-              grid: {
-                display: true,
-                color: "rgba(255,99,132,0.2)"
-              }
-            },
-            x: {
-              grid: {
-                display: false
-              }
-            }
+            // },
+            // x: {
+            //   grid: {
+            //     display: false
+            //   }
+            // }
           }
       }
     
