@@ -21,7 +21,13 @@ const Chapter2 =()=>{
                   <li>
                     <Link to="/chapter2/seidal">Gauss-Seidal Method</Link>
                   </li>
+                  <li>
+                    <Link to="/chapter2/conjugate">Conjugate Method</Link>
+                  </li>
+
+                  
               </ul>
+
          </div>
          )
 }

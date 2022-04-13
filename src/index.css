@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* background-color: rgba(0, 0, 0, 0.192); */
+  background-color: rgba(195, 219, 233, 0.753);
   margin-bottom: 30px;
   margin-top: 30px;
 }
@@ -17,4 +17,30 @@ code {
 li{
   display:flex;
   justify-content:space-between;
+}
+.chart{
+  background-color: rgb(228, 221, 196);
+   width: 100%;
+   /* max-height:1000px;  */
+}
+.inputmatrix{
+  width: 40px;
+  
+}
+.inputmatrix2{
+  width:40px;
+  
+}
+.matrix{
+  margin:1%;
+  justify-content:center;
+  display:flex;
+  flex-flow:row no-wrap;
+  gap:0px
+}
+.matrix1{
+  padding: 5px;
+}
+.matrix2{
+  padding: 5px;
 }

@@ -1,36 +1,15 @@
 // import logo from './logo.svg';
 import './App.css';
 import Homepage from './component/Homepage';
-import ListComponent from './component/Listcomponent'
 import {useNavigate ,Link, Route,Routes,BrowserRouter as Router} from 'react-router-dom'
 import Chapter1 from './component/ch1/Chapter1'
 import Chapter2 from './component/ch2/Chapter2';
-import Bisection from './component/ch1/Bisection'
-import FalsePosition from './component/ch1/FalsePosition'
-import OnePoint from './component/ch1/OnePoint';
-import Newtonraphson from './component/ch1/Newtonraphson';
-import CramerRule from './component/ch2/CramerRule';
-import Gauseeliminate from './component/ch2/Gausselimination';
-import GaussJordan from './component/ch2/GaussJordan';
-import LU from './component/ch2/LU';
-import Gausseliminate from './component/ch2/Gausselimination';
-import Gaussseidal from './component/ch2/Gaussseidel';
-import Jacobi from './component/ch2/Jacobi';
-function App() {
-  const ar = [
-    {name :"บทที่ 1" ,key: 1},
-    {name :"บทที่ 2",key: 2},
-    {name :"บทที่ 3",key: 3}
-  ]
-  const ar2 = [
-    {name :"Bisection Method" ,key: 1},
-    {name :"False position Method",key: 2},
-    {name :"Compitational Procedure",key: 3},
-    {name :"One-Point Iteration Method",key: 4},
-    {name :"False position Method",key: 5},
-  ]
 
-  // const history = useNavigate();
+import Formcomponent from './component/Formcomponent';
+import Chapter3 from './component/ch3/Chapter3';
+function App() {
+
+
   
   return (
     <div>
@@ -49,17 +28,15 @@ function App() {
               <li className="a">
                 <Link to="/chapter2/*">Linear algebra</Link>
               </li>
+              <li className="a">
+                <Link to="/chapter3/*">Interpolation and extrapolation</Link>
+              </li>
             </ul>
           </div>
           <Routes>
             <Route
               path="/"
               exact
-              // element={
-              //   <div>
-              //     <ListComponent item={ar} />
-              //   </div>
-              // }
             ></Route>
             <Route path="/chapter1/*" exact element={<Chapter1 />}></Route>
             <Route
@@ -67,7 +44,7 @@ function App() {
               element={
                 <div>
                   <Chapter1 />
-                  <Bisection />
+                  <Formcomponent states = "bisection"/>
                 </div>
               }
             ></Route>
@@ -76,7 +53,7 @@ function App() {
               element={
                 <div>
                   <Chapter1 />
-                  <FalsePosition />
+                  <Formcomponent states ="falseposition"/>
                 </div>
               }
             ></Route>
@@ -85,7 +62,7 @@ function App() {
               element={
                 <div>
                   <Chapter1 />
-                  <OnePoint />
+                  <Formcomponent states = "onepoint"/>
                 </div>
               }
             ></Route>
@@ -94,7 +71,7 @@ function App() {
               element={
                 <div>
                   <Chapter1 />
-                  <Newtonraphson />
+                  <Formcomponent states = 'newtonraphson'/>
                 </div>
               }
             ></Route>
@@ -104,7 +81,7 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <CramerRule />
+                  <Formcomponent states = "cramer"/>
                 </div>
               }
             ></Route>
@@ -113,7 +90,7 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <Gausseliminate />
+                  <Formcomponent states = "gauseeliminate"/>
                 </div>
               }
             ></Route>
@@ -122,7 +99,7 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <GaussJordan />
+                  <Formcomponent states = "gaussjordan"/>
                 </div>
               }
             ></Route>
@@ -132,7 +109,7 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <LU />
+                  <Formcomponent states = "lu"/>
                 </div>
               }
             ></Route>
@@ -141,7 +118,7 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <Jacobi/>
+                  <Formcomponent states = "jacobi"/>
                 </div>
               }
             ></Route>
@@ -150,10 +127,42 @@ function App() {
               element={
                 <div>
                   <Chapter2 />
-                  <Gaussseidal/>
+                  <Formcomponent states = "seidal"/>
                 </div>
               }
             ></Route>
+            <Route
+              path="/chapter2/conjugate"
+              element={
+                <div>
+                  <Chapter2 />
+                  <Formcomponent states = "conjugate"/>
+                </div>
+              }
+            ></Route>
+            <Route path="/chapter3/*" exact element={<Chapter3 />}></Route>
+            <Route
+              path="/chapter3/newtondivide"
+              element={
+                <div>
+                  <Chapter3 />
+                  <Formcomponent states = "newtondivide"/>
+                </div>
+              }
+            ></Route>
+            <Route
+              path="/chapter3/lagrange"
+              element={
+                <div>
+                  <Chapter3 />
+                  <Formcomponent states = "lagrange"/>
+                </div>
+              }
+            ></Route>
+
+
+
+
           </Routes>
         </div>
       </Router>

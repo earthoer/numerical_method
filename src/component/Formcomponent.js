@@ -1,27 +1,118 @@
-import { useState,useEffect, createElement } from "react";
-import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index,row,column} from "mathjs";
-// import 'Formcomponent.css'
+import { useState,useEffect, createElement,useRef } from "react";
+import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index,row,column,transpose, ConditionalNodeDependencies} from "mathjs";
 import './Formcomponent.css'
-// import '../../App.css'
 import Chart from "./Chartcomponent";
-import Newtonraphson from "./ch1/Newtonraphson";
 import Select from 'react-select'
 import {MathJax,MathJaxContext} from "better-react-mathjax"
-
+import Bisection from "./ch1/Bisection";
+import FalsePosition from "./ch1/FalsePosition";
+import OnePoint from "./ch1/OnePoint";
+import Newtonraphson from "./ch1/Newtonraphson";
+import CramerRule from "./ch2/CramerRule"
+import Gausseliminate from "./ch2/Gausselimination";
+import GauseJordan from "./ch2/GaussJordan";
+import Jacobi from "./ch2/Jacobi";
+import Gaussseidal from "./ch2/Gaussseidel";
+import Conjugate from "./ch2/Conjugate";
+import Lagrange from './ch3/Lagrange'
+import Checkmultierror from './Checkmultierror'
+import ReactDOM from 'react-dom'
+import React from 'react'
+import Chartcomponent from "./Chartcomponent";
+import Chartcomponent2 from "./Chartcomponent2";
+import Dropd from "react-dropd"
 const Formcomponent = (states) => {
   const [equation, setEquation] = useState("");
   const [left, setleft] = useState("");
   const [right, setright] = useState("");
   const [answer, setanswer] = useState([]);
   const [error, seterror] = useState([]);
-  const [fx, setfx] = useState([]);
-  const [xcount, setxcount] = useState(0);
+  const [fx, setfx] = useState("");
+  const [row, setrow] = useState(0);
+  const [column, setcolumn] = useState(0);
   const [arans, setarans] = useState([]);
-  const inputxcount = (e) => {
-    setxcount(e.target.value);
+  const [arerr, seterr] = useState([]);
+  const [mat,setmat] = useState([]);
+  const [mat2,setmat2] = useState([]);
+  const [temp,settemp] = useState("")
+  const [artemp,setartemp] = useState([]);
+  const [artemp2,setartemp2] = useState([]);
+  const [interx,setinterx] = useState([])
+  const [intery,setintery] = useState([])
+  const [item,setitem] = useState([])
+  const itemref = useRef(item)
+  const [exeq,setexeq] = useState([]);
+  const exeqref = useState(exeq)
+  const [check,setcheck] = useState(false);
+  const API_URL ='http://localhost:3001/items'
+  useEffect(()=>{
+    const fetchitem = async ()=> {
+      try{
+        const response = await fetch(API_URL)
+        const listeq = await response.json()
+        setitem(listeq)
+        // setitem([])
+       
+        
+      }
+      catch (e){
+        console.log(e.stack)
+      }
+    }
+
+    fetchitem()
+
+  },[])
+
+useEffect(()=>{
+  itemref.current = item
+  exeqref.current =exeq
+},[item,exeq])
+  const inputinter = (e)=>{
+    artemp[e.target.id] = JSON.parse(e.target.value)
+    let ar =[]
+    for(let i =0;i<artemp.length/2;i++){
+      ar.push(artemp[i])
+    }
+    setinterx(ar)
+    ar= []
+    for(let i =artemp.length/2;i<artemp.length;i++){
+      ar.push(artemp[i])
+
+    }
+    setintery(ar)
+    
+  }
+
+  const inputmat = (e)=>{
+    // console.log(e.target.value)
+    mat[e.target.id[1]][e.target.id[4]] = Number(e.target.value)
+    console.log(mat)
+    setmat(mat)
+    setEquation(JSON.stringify(mat))
+      
+  }
+  const inputmat2 = (e)=>{
+    
+    mat2[e.target.id] = Number(e.target.value)
+    // console.log(mat2)
+    setmat2(mat2)
+    setEquationans(JSON.stringify(mat2))
+    
+  }
+  const inputrow = (e) => {
+    setrow(e.target.value);
   };
+  const inputcolumn = (e) => {
+    setcolumn(e.target.value);
+  };
+
   const inputeq = (e) => {
     setEquation(e.target.value);
+  };
+  const inputtemp = (e) => {
+    console.log(e.target.value)
+    settemp(e.target.value);
   };
   const inputleft = (e) => {
     setleft(e.target.value);
@@ -30,9 +121,7 @@ const Formcomponent = (states) => {
     setright(e.target.value);
   };
   const [equationans, setEquationans] = useState("");
-  const [equation2, setEquation2] = useState("");
-  const [answer1, setanswer1] = useState("");
-  const [answer2, setanswer2] = useState("");
+
   const inputeqans = (e) => {
     setEquationans(e.target.value);
   };
@@ -63,12 +152,8 @@ const Formcomponent = (states) => {
   function geterror(x, y) {
     return abs((x - y) / x);
   }
-  function getfalsepos(xl, xr, fxl, fxr) {
-    return (xl * fxr - xr * fxl) / (fxr - fxl);
-  }
-  const dimentions = (e) => {
-    console.log("test select dimention : ", e.value);
-  };
+
+
   let st = JSON.stringify(Object.values(states));
   st = st.slice(2, -2);
 
@@ -80,9 +165,21 @@ const Formcomponent = (states) => {
     st === "newtonraphson"
   ) {
     ep = 1;
-  } else {
+  } else if(
+    st==="cramer"||
+    st==="gauseeliminate"||
+    st==="gausejordan"||
+    st==="lu"||
+    st==="jacobi"||
+    st==="seidal"||
+    st==="conjugate"
+  ){
     ep = 2;
   }
+  else{
+    ep =3;
+  }
+
   if (ep === 1) {
     if (document.getElementById("l")) {
       if (st === "bisection") {
@@ -92,7 +189,8 @@ const Formcomponent = (states) => {
         leftinput = "ใส่ค่าด้านซ้าย";
         rightinput = "ใส่ค่าด้านขวา";
       } else if (st === "onepoint") {
-        console.log("st  :      ", st);
+        // console.log("st  :      ", st);
+        
         leftinput = "ใส่ค่าเริ่มต้น";
       } else if (st === "newtonraphson") {
         console.log("st  :      ", st);
@@ -100,512 +198,420 @@ const Formcomponent = (states) => {
       }
     }
   } else if (ep === 2) {
-    // console.log(ep);
+    // console.log(mat);
     if (document.getElementById("ans")) {
+      // console.log("test")
       let holder = document.getElementById("ans");
       holder.innerHTML = "";
       for (let i = 0; i < answer.length; i++) {
         let a = i+1
-        holder.innerHTML += "x"+a+" = "+JSON.parse(answer[i]).toFixed(6) + "<br>";
+        holder.innerHTML += "x"+a+" = "+JSON.parse(answer[i]).toFixed(6) + " ";
+      }
+    }
+    if (document.getElementById("err")) {
+      try{
+        let holder = document.getElementById("err");
+      holder.innerHTML = "";
+      if(st!=="conjugate"){
+        
+        for (let i = 0; i < arerr.length; i++) {
+          let a = i+1
+          console.log(error)
+          holder.innerHTML += "Error"+a+" = "+JSON.parse(error[i]).toFixed(10) + " ";
+        }
+      }
+      else{
+          console.log(error)
+          holder.innerHTML += "Error = "+JSON.parse(error[error.length-1]);
+      }
+      }catch(e){
+        console.log(e)
       }
     }
   }
-// console.log(st)
-  const checkmultierror = (ar,eps)=>{
-    for(let i = 0;i<ar.length;i++){
+ useEffect(()=>{
+  
+    try{
       
-      if(ar[i]>eps){
-        // console.log(ar[i])
-        return true;
+      if(ep===2){
+        let count = 0
+      let holder = document.getElementById("drawmatrix");
+      let matrixinput =[]
+      for(let i = 0;i<column;i++){
+        for(let j=0;j<row;j++){
+          let id = "["+i+"]["+j+"]"
+          matrixinput.push(<input id={id} type="number" className="inputmatrix" onChange={inputmat}/>)
+          count++;
+        }
+        matrixinput.push(<br/>)
       }
+      console.log(mat)
+
+      setmat([])
+
+      for(let i = 0;i<column;i++){
+            let artemp = []
+            for(let j=0;j<row;j++){
+              artemp.push(0)
+            }
+            mat[i]=artemp;
+          }
+      // if(mat.length===0&&row>0&&column>0){
+      //   for(let i = 0;i<column;i++){
+      //     let artemp = []
+      //     for(let j=0;j<row;j++){
+      //       artemp.push(0)
+      //     }
+      //     mat[i]=artemp;
+      //   }
+      // }
+      // else if(mat[0].length!==row||mat.length!==column){
+
+      //   setmat([])
+        
+      //   let ar =[]
+      //   for(let i = 0;i<column;i++){
+      //     let artemp = []
+      //     for(let j=0;j<row;j++){
+      //       artemp.push(0)
+      //     }
+      //     ar[i] =artemp
+      //   }
+      //   setmat(ar)
+      // }
+      
+      let holder2 = document.getElementById("drawmatrix2")
+      let answerinput = []
+      count=0
+      for(let i =0;i<column;i++){
+        answerinput.push(<input id={count} type="number" className="inputmatrix2" onChange={inputmat2}/> )
+        count++
+        answerinput.push(<br/>)
+      }
+
+      setmat2([])
+      for(let i = 0;i<column;i++){
+            console.log(i)
+            mat2[i] = 0;
+          }
+      // if(mat2.length===0&&column>0){
+      //   console.log("case 1")
+      //   for(let i = 0;i<column;i++){
+      //     mat2[i] = 0;
+      //   }
+      // }
+      // else if(mat[0].length!==row||mat.length!==column){
+      //   console.log("case 2")
+
+      //   setmat2([])
+
+      //   let ar =[]
+      //   for(let i = 0;i<column;i++){
+      //     ar.push(0)
+      //   }
+      //   setmat2(ar)
+      // }
+      ReactDOM.render(matrixinput,holder)
+      ReactDOM.render(answerinput,holder2)
+
+      
+      }
+    }catch(e){
+      console.log(e)
     }
-    return false;
+    
+ },[row,column])
+ useEffect(()=>{
+  if(ep===3){
+    try{
+      let holder = document.getElementById("inputinterpolation")
+      let input =[]
+      let temp2 = Array(JSON.parse(row)*2).fill(0)
+  
+          for(let j=0;j<row;j++){
+            let t = j+JSON.parse(row)
+
+            input.push(<div>
+              <span style={{display:"flex"}}><p>x :{j+1}</p><input id={j} type="number"  onChange={inputinter} style={{width:"80px"}} />
+                    <p>y :{j+1}</p><input id={t} type="number"  onChange={inputinter} style={{width:"80px"}} />
+              </span>
+              <br/>
+            </div>
+            )
+          }
+         
+        ReactDOM.render(input,holder)
+        setartemp(temp2)
+    }catch(e){
+      console.log(e)
+    }
   }
+},[row])
   const onSubmitf = (event) => {
     event.preventDefault();
     setanswer([])
-    let e = 100000;
-    let eps = 0.000001;
-    let old = 0;
-    let ans = 0;
-    let i = 0;
-    let temp = 0;
-    let state = 0;
+    let nar =[]
     if (st === "bisection") {
       let l = Number(left);
       let r = Number(right);
       console.log("bisection");
       if (equation.length > 0 && left.length > 0 && right.length > 0) {
-        try {
-          let eq = "";
-          let eqt;
-
-          if (equation.indexOf("x") < 0) {
-            if (equation[0] === "-") {
-              let teq = equation.substring(1);
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              eq = "x+" + teq;
-            } else {
-              let teq = equation;
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              console.log(teq);
-              eq = "x-" + teq;
-            }
-            eqt = parse(eq);
-          } else {
-            eqt = parse(equation);
-          }
-          // console.log(eqt.toString())
-
-          while (e > eps) {
-            let mid = (l + r) / 2;
-            let fm = eqt.evaluate({ x: mid });
-            let fl = eqt.evaluate({ x: l });
-            let fr = eqt.evaluate({ x: r });
-
-            const data = [
-              { mid: mid },
-              { "f(m)": fm },
-              { r: r },
-              { "f(r)": fr },
-              { l: l },
-              { "f(l)": fl },
-              { e: e },
-              { "fr*fm": fm * fr },
-            ];
-            // console.log(data)
-            if (fr * fm > 0) {
-              old = r;
-              r = mid;
-              e = geterror(mid, old);
-              // e= e.im
-
-              if (e < eps) {
-                console.log("case 1");
-                break;
-              }
-            } else {
-              old = l;
-              l = mid;
-              e = geterror(mid, old);
-              // e=e.im
-              if (e < eps) {
-                console.log("case 2");
-                break;
-              }
-            }
-            const er = e;
-            ans = mid;
-
-            ar1.push(ans);
-            ar2.push(er);
-            ar3.push(fm);
-            // console.log("i  : ",i,"state : ",state ,"from e-temp",abs(e-temp))
-            if (i > 0) {
-              if (abs(er - temp) < 0.00005) {
-                state += 1;
-              } else {
-                state = 0;
-              }
-              temp = er;
-            }
-            i++;
-
-            if (state >= 5) {
-              console.log("case 3");
-              break;
-            }
-          }
-
-          setanswer(ar1);
-          seterror(ar2);
-          setfx(ar3);
-        } catch (e) {
-          console.log(e);
-        }
+          nar.push(Bisection(equation,l,r))
+          setanswer(nar[0][0]);
+          seterror(nar[0][1]);
       }
     } else if (st === "falseposition") {
       let l = Number(left);
       let r = Number(right);
-      console.log("falseposition");
       if (equation.length > 0 && left.length > 0 && right.length > 0) {
-        try {
-          let eq = "";
-          let eqt;
-
-          if (equation.indexOf("x") < 0) {
-            if (equation[0] === "-") {
-              let teq = equation.substring(1);
-              // teq = [teq.slice(0,1),'(',teq.slice(1).join('')]
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              eq = "x+" + teq;
-            } else {
-              let teq = equation;
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              // console.log(teq)
-
-              eq = "x-" + teq;
-            }
-            eqt = parse(eq);
-          } else {
-            eqt = parse(equation);
-          }
-
-          // console.log(eqt.toString())
-          while (e > eps) {
-            let mid = (l + r) / 2;
-            let fm = eqt.evaluate({ x: mid });
-            let fl = eqt.evaluate({ x: l });
-            let fr = eqt.evaluate({ x: r });
-            let x = getfalsepos(l, r, fl, fr);
-            let fx = eqt.evaluate({ x: x });
-            const data = [
-              { "f(m)": fm },
-              { r: r },
-              { "f(r)": fr },
-              { l: l },
-              { "f(l)": fl },
-              { x: x },
-              { fx: fx },
-              { e: e },
-              { "fr*fm": fm * fr },
-            ];
-            // console.log(data)
-            if (fx * fr > 0) {
-              old = l;
-              r = x;
-              e = geterror(x, old);
-              // e= e.im
-
-              if (e < eps) {
-                console.log("case 1");
-                const er = e;
-                ans = x;
-                ar1.push(ans);
-                ar2.push(er);
-                ar3.push(fx);
-                break;
-              }
-            } else {
-              old = r;
-              r = x;
-              e = geterror(x, old);
-              // e=e.im
-              if (e < eps) {
-                console.log("case 2");
-                const er = e;
-                ans = x;
-                ar1.push(ans);
-                ar2.push(er);
-                ar3.push(fx);
-                break;
-              }
-            }
-            const er = e;
-            ans = x;
-            const d = [{ e: er }, { ans: ans }];
-            // console.log(d)
-            ar1.push(ans);
-            ar2.push(er);
-            ar3.push(fx);
-            if (i > 0) {
-              if (abs(er - temp) < 0.00005) {
-                state += 1;
-              } else {
-                state = 0;
-              }
-              temp = er;
-            }
-            i++;
-            if (state >= 5) {
-              console.log("case 3");
-              break;
-            }
-          }
-          setanswer(ar1);
-          seterror(ar2);
-          setfx(ar3);
-        } catch (e) {
-          console.log(e);
-        }
+          nar.push(FalsePosition(equation,l,r))
+          setanswer(nar[0][0]);
+          seterror(nar[0][1]);
       }
     } else if (st === "onepoint") {
-      console.log(st);
-      try {
-        // console.log("eq : ",equation)
         if (equation.length > 0) {
-          let eq = "";
-          let eqt;
-          if (equation.indexOf("x") < 0) {
-            console.log("not x ");
-            console.log(equation.indexOf("x") > 0);
-            if (equation[0] === "-") {
-              let teq = equation.substring(1);
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              eq = "x+" + teq;
-            } else {
-              let teq = equation;
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              // console.log(teq)
-              eq = "x-" + teq;
-            }
-            eqt = parse(eq);
-          } else {
-            console.log(equation.indexOf("x"));
-            eqt = parse(equation);
-          }
-
-          // setleft(0)
-          // setright(0)
-          const l = left;
-          let x = parseFloat(l);
-          console.log(eqt.toString());
-          while (e > eps) {
-            console.log(x);
-            old = x;
-            x = eqt.evaluate({ x: x });
-            e = geterror(x, old);
-
-            const er = e;
-            ans = old;
-            if (i > 0) {
-              if (abs(er - temp) < 0.00005) {
-                state += 1;
-              } else {
-                state = 0;
-              }
-              temp = er;
-            }
-            i++;
-            if (state >= 5) {
-              console.log("case 3");
-              break;
-            }
-            ar1.push(ans);
-            ar2.push(e);
-            if (i == 1000) {
-              break;
-            }
-          }
-          setanswer(ar1);
-          seterror(ar2);
+          nar.push(OnePoint(equation,left))
+          setanswer(nar[0][0]);
+          seterror(nar[0][1]);
         }
-      } catch (e) {
-        console.log(e);
-      }
+ 
     } else if (st === "newtonraphson") {
-      console.log(st);
-      try {
-        console.log("eq : ", equation);
         if (equation.length > 0) {
-          let eq = "";
-          let eqt;
-          if (equation.indexOf("x") < 0) {
-            if (equation[0] === "-") {
-              let teq = equation.substring(1);
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              eq = "x+" + teq;
-            } else {
-              let teq = equation;
-              teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-              console.log(teq);
-              eq = "x-" + teq;
-            }
-            eqt = parse(eq);
-          } else {
-            eqt = parse(equation);
-          }
-          console.log(eqt.toString());
-          let s = Number(left);
-          let x = s;
-          let div = derivative(eqt, "x");
-          console.log("div : ", div.toString());
-          let deltax = -(eqt.evaluate({ x: x }) / div.evaluate({ x: x }));
-          let newx = x + deltax;
-          e = geterror(newx, x);
-          x = newx;
-          ar1.push(x);
-          ar2.push(e);
-          const data = [{ x: x }, { deltax: deltax }, { e, e }];
-          // console.log(data)
-          while (e > eps) {
-            deltax = -(eqt.evaluate({ x: x }) / div.evaluate({ x: x }));
-            newx = x + deltax;
-            e = geterror(newx, x);
-            x = newx;
-            ans = x;
-            const data = [{ x: x }, { deltax: deltax }, { e, e }];
-            console.log(data);
-            const er = e;
-            if (i > 0) {
-              if (abs(er - temp) < 0.00005) {
-                state += 1;
-              } else {
-                state = 0;
-              }
-              temp = er;
-            }
-            i++;
-            if (state >= 5) {
-              console.log("case 3");
-              break;
-            }
-            ar1.push(ans);
-            ar2.push(e);
-            if (i == 1000) {
-              break;
-            }
-          }
-          setanswer(ar1);
-          seterror(ar2);
+          nar.push(Newtonraphson(equation,left))
+          setanswer(nar[0][0]);
+          seterror(nar[0][1]);
         }
-      } catch (e) {
-        console.log(e);
-      }
     } else if (ep === 2) {
-      // setarans(arrans)
       document.getElementById("ans").innerHTML =""
-      if (st == "cramer") {
-        console.log(st)
-        try {
+      if (st === "cramer") {
           let eq = JSON.parse(equation);
           const eqans = JSON.parse(equationans);
-          const mata = matrix(eq);
-          const matb = matrix(eqans);
-          let contain = [];
-          let rows = mata.size()[0];
-          let columns = mata.size()[1];
-          console.log("row : ", rows, " column : ", columns);
-          console.log(mata.toString());
-          let deta = det(mata);
-          let ar = []
-          for (let i = 0; i < rows; i++) {
-            let matc = JSON.parse(JSON.stringify(eq));
-            for (let j = 0; j < columns; j++) {
-              matc[j][i] = eqans[j];
-
-            }
-
-            let rmatc = matrix(matc);
-            let detc = det(rmatc)
-            console.log("deta",deta)
-            console.log('detc',detc)
-            let ans = deta/detc
-            ar.push(ans)
-            console.log(rmatc.toString());
-           
-          }
-          
-          setanswer(ar)
-          console.log("size of answer : ",answer.length)
-          console.log("answer  : ",ar)
-        } catch (e) {
-          console.log(e);
-        }
+          nar.push(CramerRule(eq,eqans))
+          setanswer(nar[0])
+     
       }
-      else if(st=="gauseeliminate"){
+      else if(st==="gauseeliminate"){
         console.log(st)
-        let eq = JSON.parse(equation);
-        const eqans = JSON.parse(equationans);
-        const mata = matrix(eq);
-        const matb = matrix(eqans);
+        nar.push(Gausseliminate(equation,equationans))
+        console.log(nar)
+        setanswer(nar[0])
       }
       else if(st==="gaussjordan"){
         console.log(st)
+        nar.push(GauseJordan(equation,equationans))
+        setanswer(nar[0])
+        console.log(nar[0])
+          
       }
       else if(st==="jacobi"){
-        console.log(st)
-        let eq = JSON.parse(equation);
-        const eqans = JSON.parse(equationans);
-        let error = new Array(eq[0].length).fill(100)
-        let x = JSON.parse("["+left+"]");
-        console.log(error)
-        while(checkmultierror(error,eps)){
 
-          let xn = new Array(eq[0].length).fill(0)
-          for(let i  =0 ;i<eq.length;i++){
-            xn[i]=eqans[i]
-            for(let j = 0;j<eq[0].length;j++){
-              if(i!==j){
-                xn[i]-=(eq[i][j]*x[j])
-              }
-            }
-            xn[i]/=eq[i][i]
-            error[i]=geterror(xn[i],x[i])
-
-          }
-          x =JSON.parse(JSON.stringify(xn))
-          
-        }
-        console.log(x.toString())
-        setanswer(x)
+        nar.push(Jacobi(equation,equationans,left))
+        let temp = transpose(nar[0][1])
+        let temp2 = Object.keys(temp).map((e) =>temp[e][temp[0].length-1]);
+        seterror(temp2)
+        setarans(transpose(nar[0][0]))
+        seterr(transpose(nar[0][1]))
+        setanswer(nar[0][2])
       }
       else if(st==="seidal"){
-        console.log(st)
-        let eq = JSON.parse(equation);
-        const eqans = JSON.parse(equationans);
-        let error = new Array(eq[0].length).fill(100)
-        let x = JSON.parse("["+left+"]");
-        console.log(error)
-        while(checkmultierror(error,eps)){
-          let xn = new Array(eq[0].length).fill(0)
-          for(let i  =0 ;i<eq.length;i++){
-            xn[i]=eqans[i]
-            for(let j = 0;j<eq[0].length;j++){
-              if(j<i){
-                xn[i]-=(xn[j]*eq[i][j])
-              }
-              else if(i!==j){
-                xn[i]-=(eq[i][j]*x[j])
-              }
-            }
-            xn[i]/=eq[i][i]
-
-            error[i]=geterror(xn[i],x[i])
-
+        nar.push(Gaussseidal(equation,equationans,left))
+        let temp = transpose(nar[0][1]) 
+        let temp2 = Object.keys(temp).map((e) =>temp[e][temp[0].length-1]);
+        seterror(temp2)
+        seterr(transpose(nar[0][1]))
+        setarans(transpose(nar[0][0]))
+        setanswer(nar[0][2])
+      }
+      else if(st==="conjugate"){
+        nar.push(Conjugate(equation,equationans,left))
+        let x = JSON.parse(JSON.stringify(nar[0][0]))
+        let y = JSON.parse(JSON.stringify(nar[0][1]))
+        let z = JSON.parse(JSON.stringify(nar[0][2]))
+        let ans  =[]
+        let dataans = []
+        let ch = ""
+        let  i =1
+        for( i  = 1;i<x.length;i++){
+          if(x[i]==']'){
+            ans.push(parseFloat(ch))
+            break;
           }
-          x =JSON.parse(JSON.stringify(xn))
-          // console.log(x.toString())
-          
+          if(x[i]==','){
+            ans.push(parseFloat(ch))
+            ch = ""
+            i++;
+          }
+          ch = ch+x[i]
         }
-        console.log(x.toString())
-        setanswer(x)
+        ch = ""
+        for(let j = 0;j<y.length;j++){
+          let temp = []
+          for( i  = 1;i<y[j].length;i++){
+            if(y[j][i]===']'){
+              temp.push(parseFloat(ch))
+              ch = ""
+              break;
+            }
+            if(y[j][i]===','){
+              temp.push(parseFloat(ch))
+              ch = ""
+              i++;
+            }
+            ch = ch+y[j][i]
+          }
+          dataans.push(temp)
+        }
+        setarans(transpose(dataans))
+        seterr(z[z.length-1])
+        seterror(z)
+        setanswer(ans)
+      }
+    }
+    else if(ep ===3){
+      // console.log(equation)
+      let ar = []
+      let x = left
+      for(let i =0;i<equation.length;i++){
+        let text = ""
+        if(equation[i]!==','){
+          for(let j =i;j<equation.length;j++){
+            if(equation[j]===','){
+              i=j;
+              break;
+            }
+            text+=equation[j]
+          }
+          
+          ar.push(JSON.parse(text)-1)
+        }
+
+      }
+
+      if(st==="lagrange"){
+
+        nar.push(Lagrange(interx,intery,x,ar))
+        setanswer(nar[0])
+        // console.log(nar[0])
       }
     }
   };
-  const data = [];
+  let data = [];
   let datae = [];
-  const datafx = [];
+  
   useEffect(() => {
     setanswer([]);
     seterror([]);
-    setfx([]);
-  }, [equation, left, right]);
-
+    seterr([]);
+  }, [equation, left, right,equationans]);
+  let tempar =[]
+  let temper = []
+  for(let i = 0;i<arans.length;i++){
+    tempar.push(arans[i].map((e) =>JSON.parse(JSON.stringify(e.toFixed(6)))))
+  }
+  for(let i = 0;i<arerr.length;i++){
+    
+    temper.push(arerr[i].map((e) =>JSON.parse(JSON.stringify(e))))
+  }
   for (let i = 0; i < answer.length; i++) {
-    data.push({ y: JSON.parse(JSON.stringify(answer[i].toFixed(6))), x: i + 1 });
-    // answer[i] = Number(Number(answer[i]).toFixed(6) );
+    data.push( JSON.parse(JSON.stringify(answer[i].toFixed(6))));
   }
-  // [{1.2,1},{1.3,2}]
-  // console.log(answer)
-
+  // console.log(data)
   for (let i = 0; i < error.length; i++) {
-    datae.push({ y: error[i], x: i + 1 });
+    datae.push(error[i]);
   }
-  for (let i = 0; i < fx.length; i++) {
-    datafx.push({ y: fx[i], x: i + 1 });
+  if(ep===2){
+    data = tempar
+    if(st==="jacobi"||st==="seidal"){
+      datae =temper
+    }
   }
-  const options = [
-    { value: "2", label: "2" },
-    { value: "3", label: "3" },
-    { value: "4", label: "4" },
-  ];
+  useEffect(() => {
+    let holder = document.getElementById("drop");
+    let input = [];
+    let ar =[]
+    console.log(item[0])
+    try{
+      
+    if (st === "onepoint") {
+      for (let i = 0; i < item[0].onepoint.length; i++) {
+        ar.push(item[0].onepoint[i].eq);
+      }
+    } else if (ep === 1) {
+      for (let i = 0; i < item[0].ch1.length; i++) {
+        ar.push(item[0].ch1[i].eq);
+      }
+    }
+    else if(ep===2){
+      for(let i = 0;i<item[0].ch2.length;i++){
+        // console.log(item[0].ch2[i].eq)
+        ar.push(JSON.stringify(item[0].ch2[i].eq))
+        ar[i]+="*"
+        ar[i]+=JSON.stringify(item[0].ch2[i].eqans)
+      }
+    }
+    ar.push("custom");
+    console.log(ar)
+
+
+
+    }
+    catch (e){
+      // console.log(e.stack)
+    }
+
+    input.push(
+      <Dropd
+        placeholder="select ex equation"
+        list={ar}
+        onItemChange={(data) => {
+          
+          if (data !== "custom") {
+            setcheck(false)
+            if(ep===1){
+              setEquation(data);
+            }
+            if(ep===2){
+              let a  =[]
+              let b = []
+              let count=0
+              for(let i = 0;i<data.length;i++){
+                if(data[i]==="*"){
+                  break;
+                }
+                count++;
+              }
+              a = data.slice(0,count)
+
+              b = data.slice(count+1,data.length)
+              console.log(a)
+              console.log(b)
+              setEquation(a)
+              setEquationans(b)
+
+            }
+          }
+          else if(data!==equation){
+            
+            setEquation("")
+            setEquationans("")
+          }
+          if(data===""||data==="custom"){
+            setcheck(true)
+          }
+        }}
+      />
+    )
+    ReactDOM.render(input,holder)
+  }, [ep, st,item]);
+
+
+
+
+  // console.log(exeq)
   const mt = (eq) => {
     try {
       return (
-        <td>
-          <nobr>
-            <MathJax dynamic>
+            <MathJax dynamic inline>
               {"\\(" +
                 parse(eq.toString().replace(/\r/g, "")).toTex({
                   parenthesis: "keep",
@@ -613,32 +619,33 @@ const Formcomponent = (states) => {
                 }) +
                 "\\)"}
             </MathJax>
-          </nobr>
-        </td>
       );
     } catch (e) {
       return <MathJax dynamic>{e.toString}</MathJax>;
     }
   };
-  
   return (
     <div align="center" className="form">
-      {/* <MathComponent tex={String.raw`\int_0^1 x^2\ dx`} /> */}
-
+      <h1>{st}</h1>
+      <div id="drop"></div>
+      <br />
+      <br />
       {ep === 1 && (
         <div>
-          <MathJaxContext>
-            <p>
-              Question : {mt(equation)} Answer: {answer[answer.length - 1]}
-            </p>
-          </MathJaxContext>
+          <div>
+            <MathJaxContext>Question : {mt(equation)}</MathJaxContext>
+            <br />
+            Answer: {answer[answer.length - 1]}
+          </div>
+
           <p> error: {error[error.length - 1]}</p>
           <form onSubmit={onSubmitf} id="roote">
-            <div>
-              <label>ใส่สมการ </label>
-              <input type="text" onChange={inputeq} />
-            </div>
-
+            {{ check } && (
+              <div>
+                <label>Put the equation : </label>
+                <input type="text" onChange={inputeq} />
+              </div>
+            )}
             <div align="center">
               <div id="l">
                 <label>{leftinput}</label>
@@ -654,47 +661,102 @@ const Formcomponent = (states) => {
 
             <button type="submit">submit</button>
           </form>
-          <div className="chart">
-          <Chart dataans={data} dataerror={datae} datafx={datafx}></Chart>
+          {typeof data[0] !== undefined && (
+            <div className="chart">
+              {/* {console.log(typeof(data[0]))} */}
+              <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
+              {/* <Chartcomponent2 fx = {fx}></Chartcomponent2> */}
+            </div>
+          )}
         </div>
-        </div>
-        
       )}
       {ep === 2 && (
         <div>
           <MathJaxContext>
             <p>
-              Question : {mt(equation)} ,{mt(equationans)} Answer:<p id ="ans"></p>
-              
-              
+              Matrix : {mt(equation)} ,{mt(equationans)}
             </p>
           </MathJaxContext>
-          <p> error: {error[error.length - 1]}</p>
+          <p>Answer:</p>
+          <p id="ans"></p>
+          {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
+            <p id="err"></p>
+          )}
+          {check && (
+            <div>
+              <span>
+                row:
+                <input
+                  type="number"
+                  onChange={inputrow}
+                  className="inputmatrix"
+                ></input>
+              </span>
+              <span>
+                column:
+                <input
+                  type="number"
+                  onChange={inputcolumn}
+                  className="inputmatrix"
+                ></input>
+              </span>
+              <div className="matrix">
+                <div>
+                  <p>matrixA</p>
+                  <div id="drawmatrix" className="matrix1" />
+                </div>
+                <div>
+                  <p>matrixB</p>
+                  <div id="drawmatrix2" className="matrix2" />
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={onSubmitf} id="linear">
-            {/* <Select options={options} className="select" onChange={dimentions}/> */}
-            <div>
-              <label>ใส่เมททริก A</label>
-              <input type="text" onChange={inputeq} />
-            </div>
-            <div>
-              <label>ใส่เมททริก B</label>
-              <input type="text" onChange={inputeqans} />
-            </div>
-            {(st ==="jacobi"||st==="seidal")&&
+            {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
               <div>
-                <label>ใส่ค่าเริ่มต้นขั้นด้วย ,</label>
+                <label>ใส่ค่าเริ่มต้นขั้นด้วย ,(ตามจำนวน column)</label>
                 <input type="text" onChange={inputleft} />
-              </div>}
+              </div>
+            )}
             <br />
             <button type="submit">submit</button>
           </form>
         </div>
       )}
-      {(st==="jacobi"||st==="seidal")&&
-      <div className="chart">
-      <Chart dataans={data} dataerror={datae} datafx={datafx}></Chart>
-    </div>}
+      {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
+        <div className="chart">
+          <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
+        </div>
+      )}
+      {ep === 3 && (
+        <div>
+          <span>
+            จำนวน x :
+            <input
+              type="number"
+              onChange={inputrow}
+              className="inputmatrix"
+            ></input>
+          </span>
+          <div id="inputinterpolation" />
+          <form onSubmit={onSubmitf}>
+            <span>
+              <p>เลือกจุดที่ต้องการใช้</p>
+              <input type="text" onChange={inputeq}></input>
+            </span>
+            <span>
+              <p>ใส่ค่า X </p>
+              <input type="text" onChange={inputleft}></input>
+            </span>
+            <br />
+            <button type="submit">confirm</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
 export default Formcomponent;
+

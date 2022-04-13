@@ -9,3 +9,7 @@ canvas{
     height: 50px;
     
 }
+.Lines{
+    display:flex;
+    border:1px solid black;
+}

@@ -1,5 +1,4 @@
-import Bisection from "./Bisection"
-import FalsePosition from "./FalsePosition"
+
 import { BrowserRouter as Router,Link,Route,Routes } from "react-router-dom"
 const Chapter1 = ()=>{
 
@@ -25,8 +24,3 @@ const Chapter1 = ()=>{
   
 }
 export default Chapter1
-// {name :"Bisection Method" ,key: 1},
-// {name :"False position Method",key: 2},
-// {name :"Compitational Procedure",key: 3},
-// {name :"One-Point Iteration Method",key: 4},
-// {name :"False position Method",key: 5},
