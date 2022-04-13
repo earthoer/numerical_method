@@ -640,7 +640,7 @@ useEffect(()=>{
 
           <p> error: {error[error.length - 1]}</p>
           <form onSubmit={onSubmitf} id="roote">
-            {{ check } && (
+            {!{ check  } && (
               <div>
                 <label>Put the equation : </label>
                 <input type="text" onChange={inputeq} />
