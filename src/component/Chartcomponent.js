@@ -15,6 +15,8 @@ import {
   Line,
 
 } from "react-chartjs-2";
+import Chart from "react-apexcharts"
+
 import zoomPlugin from "chartjs-plugin-zoom";
 
 import { ContextExclusionPlugin } from "webpack";
@@ -36,8 +38,11 @@ const Chartcomponent = ({ dataerror, dataans }) => {
   let labels = [];
   let x1 = [];
   let x2 = [];
-  
+  let Data = []
   try{
+    dataans =dataans.map((item)=>Number(item))
+   
+  
     if(typeof dataans[0]==="object"){
       labels = Object.keys(dataans[0]).map((e) => String(Number(e)+1));
     }
@@ -45,14 +50,28 @@ const Chartcomponent = ({ dataerror, dataans }) => {
       labels = Object.keys(dataans).map((e) => String(Number(e)+1));
   
     }
-    
+    Data={
+      options: {
+        chart: {
+          id: "basic-bar"
+        },
+        xaxis: {
+          categories: labels
+        }
+      },
+      series: [
+        {
+          name: "x",
+          data: dataans
+        }
+      ],
+      
+    };
   }catch(e){
     console.log(e);
   }
 
 
-  const d = [{ x1: dataans }, { x2: x2 }, { label: labels }];
-  // console.log(d);
   let data = {};
   let data2= {}
   let pointhoverrad = 10;
@@ -194,16 +213,21 @@ const Chartcomponent = ({ dataerror, dataans }) => {
       <Line 
         data={data}
         option={options}
-        height={900}
-        width={1300}
+        // height={700}
+        // width={1100}
       />
       </span>
       <span className="Lines">
       <Line 
         data={data2}
         option={options}
-        height={900}
-        width={1300}
+        // height={700} 
+        // width={1100}
+      />
+      <Chart 
+        options={Data.options}
+        series={Data.series}
+        type="line"
       />
       </span>
     </div>

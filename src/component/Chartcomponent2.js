@@ -18,6 +18,8 @@ import {
   import zoomPlugin from "chartjs-plugin-zoom";
   import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index,row,column,transpose} from "mathjs";
   import { ContextExclusionPlugin } from "webpack";
+  import Chart from "react-apexcharts"
+  import { useState,useEffect, createElement,useRef } from "react";
   let delayed;
   //   import Chart from './Ch'
   ChartJS.register(
@@ -38,66 +40,91 @@ import {
     let c = 0;
     let pos =0;
     let l = [];
-    let eps = 0.1;
-    let data ={}
+    // const [Data,setData] = useState([])
+    let data =[]
+    let labels = []
+    let Data = []
+    console.log(fx)
+    // console.log(fx.length)
+    let count =0;
     if(fx.length>0){
-        for(let i =-10; i<20;i+=0.01){
-            console.log("i : ",i," : ",abs(Fx.evaluate({x:i})))
-            if(abs(Fx.evaluate({x:i}))<eps){
-                eps = abs(Fx.evaluate({x:i}));
-                pos = i;
-            }
-            if(eps<0.000001){
-                console.log(eps)
-                break;
-            }
-            // c++;
-            // l.push(c)
-            // datas.push(Fx.evaluate({x:i}))
+        for(let i =-10; i<11;i++){
+            
+            
+                labels.push(i)
+                data.push(Fx.evaluate({x:i}))
+                console.log("labels : ",labels[count]," f(x) = ",Fx.evaluate({x:i}))
+            
+            
+            count++;
             
         }
-        console.log("c ",c)
-        data = {
-            labels: l,
-            datasets: [
-              {
-                label: "name",
-                data: datas,
-                fill: false,
-                backgroundColor: "rgba(75,192,192,0.2)",
-                borderColor: "black",
-              },
-            ],
-          };
-    }
-    else{
-        data = {
-            labels: [1, 2, 3, 4, 5, 6, 7, 8],
-            datasets: [
-              {
-                label: "name",
-                data: [],
-                fill: true,
-                backgroundColor: "rgba(75,192,192,0.2)",
-                borderColor: "rgba(75,192,192,1)",
-              },
-            ],
-          };
-    }
+      
+        // console.log(labels)
+        // console.log(data)
+        Data = {
+          options: {
+            chart: {
+              id: "basic-bar",
+              toolbar:{
+                show:true,
+                tools:{
+                  zoom:true,
+                  zoomin:true,
+                  zoomout:true,
+                  pan:true
+                }
+               
+              }
+            },
+            annotations:{
+                yaxis:[{
+                  y:0,
+                  borderColor:'black',
+                  style:{
+                    color:"#fff",
+                    background:'#00E396',
+                  }
+                }],
+                xaxis:[{
+                  x:0,
+                  borderColor:'black',
+                  style:{
+                    color:"#fff",
+                    background:'#00E396',
+                  }
+                }],
+                
+
+            },
+            xaxis: {
+              categories: labels
+            }
+          },
+          
+          series: [
+            {
+              name: "x",
+              data: data
+            }
+          ],
+          
+        }
+
+    }  
     return (
     
       <div >
         
-        {/* <Line 
-          data={data}
-        //   option={options}
-          height={900}
-          width={1300}
-        /> */}
-       
+        {fx.length>0&&
+        <Chart 
+        options={Data.options}
+        series={Data.series}
+        type="line"
+      />}
         
       </div>
-    );
+    )
   };
   export default Chartcomponent2;
   

@@ -12,4 +12,9 @@ canvas{
 .Lines{
     display:flex;
     border:1px solid black;
+    
+}
+.apexcharts-canvas{
+    background:black;
+    
 }

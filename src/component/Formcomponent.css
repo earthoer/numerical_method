@@ -1,17 +1,53 @@
-
-
-
-
+.Header {
+    font-size: 60px !important;
+}
 
 .select{
     
     width: 20%;
 }
-
+body{
+    font-size:20px;
+}
 td{
     white-space: nowrap;
 }
 .dropd {
     flex-grow: 1;
     max-width: 400px;
+  }
+.inputfalse{
+    display: none;
+}
+.chart{
+    margin: 5px 10px 5px 10px;
+    justify-content: center;
+    text-align: center;
+    width: 85%;
+    position:relative;
+    border:1.5px solid black;
+    background-color: rgb(228, 221, 196);
+    box-shadow: 5px 5px 10px rgba(0,0,0,1); 
+}
+
+.inputmatrix{
+    width: 40px;
+    
+  }
+  .inputmatrix2{
+    width:40px;
+    
+  }
+  .matrix{
+    margin:1%;
+    justify-content:center;
+    display:flex;
+    flex-flow:row no-wrap;
+    gap:0px
+  }
+  .matrix1{
+    padding: 5px;
+  }
+  .matrix2{
+    padding: 5px;
   }

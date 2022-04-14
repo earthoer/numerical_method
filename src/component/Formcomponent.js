@@ -21,6 +21,7 @@ import React from 'react'
 import Chartcomponent from "./Chartcomponent";
 import Chartcomponent2 from "./Chartcomponent2";
 import Dropd from "react-dropd"
+import FormComponent from "./Formcomponent.css"
 const Formcomponent = (states) => {
   const [equation, setEquation] = useState("");
   const [left, setleft] = useState("");
@@ -44,6 +45,7 @@ const Formcomponent = (states) => {
   const [exeq,setexeq] = useState([]);
   const exeqref = useState(exeq)
   const [check,setcheck] = useState(false);
+  const [epcheck,setepcheck] = useState(0);
   const API_URL ='http://localhost:3001/items'
   useEffect(()=>{
     const fetchitem = async ()=> {
@@ -168,7 +170,7 @@ useEffect(()=>{
   } else if(
     st==="cramer"||
     st==="gauseeliminate"||
-    st==="gausejordan"||
+    st==="gaussjordan"||
     st==="lu"||
     st==="jacobi"||
     st==="seidal"||
@@ -357,8 +359,10 @@ useEffect(()=>{
       console.log("bisection");
       if (equation.length > 0 && left.length > 0 && right.length > 0) {
           nar.push(Bisection(equation,l,r))
+          // Chartcomponent2(nar[0][0][nar[0][0].length-1])
           setanswer(nar[0][0]);
           seterror(nar[0][1]);
+
       }
     } else if (st === "falseposition") {
       let l = Number(left);
@@ -529,7 +533,7 @@ useEffect(()=>{
     let holder = document.getElementById("drop");
     let input = [];
     let ar =[]
-    console.log(item[0])
+    // console.log(item[0])
     try{
       
     if (st === "onepoint") {
@@ -550,13 +554,12 @@ useEffect(()=>{
       }
     }
     ar.push("custom");
-    console.log(ar)
+    // console.log(ar)
 
 
 
     }
     catch (e){
-      // console.log(e.stack)
     }
 
     input.push(
@@ -569,8 +572,9 @@ useEffect(()=>{
             setcheck(false)
             if(ep===1){
               setEquation(data);
+              setfx(data)
             }
-            if(ep===2){
+            else if(ep===2){
               let a  =[]
               let b = []
               let count=0
@@ -589,11 +593,16 @@ useEffect(()=>{
               setEquationans(b)
 
             }
+            else if (st==="onepoint"){
+              setEquation(data)
+              setfx(data)
+            }
           }
           else if(data!==equation){
             
             setEquation("")
             setEquationans("")
+            setfx("")
           }
           if(data===""||data==="custom"){
             setcheck(true)
@@ -626,7 +635,7 @@ useEffect(()=>{
   };
   return (
     <div align="center" className="form">
-      <h1>{st}</h1>
+      <h1 className="Header">{st}</h1>
       <div id="drop"></div>
       <br />
       <br />
@@ -640,12 +649,13 @@ useEffect(()=>{
 
           <p> error: {error[error.length - 1]}</p>
           <form onSubmit={onSubmitf} id="roote">
-            {!{ check  } && (
-              <div>
+            {/* {console.log(check)} */}
+            
+              <div className={check? "inputtrue":"inputfalse"}>
                 <label>Put the equation : </label>
                 <input type="text" onChange={inputeq} />
               </div>
-            )}
+            
             <div align="center">
               <div id="l">
                 <label>{leftinput}</label>
@@ -659,13 +669,13 @@ useEffect(()=>{
               )}
             </div>
 
-            <button type="submit">submit</button>
+            <button className="button" type="submit">submit</button>
           </form>
           {typeof data[0] !== undefined && (
             <div className="chart">
               {/* {console.log(typeof(data[0]))} */}
               <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
-              {/* <Chartcomponent2 fx = {fx}></Chartcomponent2> */}
+              <Chartcomponent2 fx = {fx}></Chartcomponent2>
             </div>
           )}
         </div>
@@ -682,8 +692,8 @@ useEffect(()=>{
           {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
             <p id="err"></p>
           )}
-          {check && (
-            <div>
+          
+            <div className={check? "inputtrue":"inputfalse"}>
               <span>
                 row:
                 <input
@@ -711,7 +721,7 @@ useEffect(()=>{
                 </div>
               </div>
             </div>
-          )}
+          
 
           <form onSubmit={onSubmitf} id="linear">
             {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
@@ -721,7 +731,7 @@ useEffect(()=>{
               </div>
             )}
             <br />
-            <button type="submit">submit</button>
+            <button className="button" type="submit">submit</button>
           </form>
         </div>
       )}
@@ -751,7 +761,7 @@ useEffect(()=>{
               <input type="text" onChange={inputleft}></input>
             </span>
             <br />
-            <button type="submit">confirm</button>
+            <button className="button" type="submit">confirm</button>
           </form>
         </div>
       )}
