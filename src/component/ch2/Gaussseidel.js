@@ -29,7 +29,7 @@ const Gaussseidal = (equation, equationans, left) => {
 
       error[i] = geterror(xn[i], x[i]);
     }
-    er.push(error);
+    er.push(JSON.parse(JSON.stringify(error)));
     ar.push(xn);
     x = JSON.parse(JSON.stringify(xn));
   }

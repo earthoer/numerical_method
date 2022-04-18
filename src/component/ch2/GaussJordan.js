@@ -68,9 +68,6 @@ const GaussJordan = (equation,equationans)=>{
                 temp3.push(temp[j]+temp2[j])
             }
            }
-           console.log(temp)
-           console.log(temp2)
-           console.log(temp3)
            mat[k] = temp3
        }
        count++;

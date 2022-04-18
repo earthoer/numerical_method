@@ -8,6 +8,7 @@ import Chapter2 from './component/ch2/Chapter2';
 import Formcomponent from './component/Formcomponent';
 import Chapter3 from './component/ch3/Chapter3';
 import Navbar from './component/Nav/Navbar'
+import Home from './component/Home'
 function App() {
 
 
@@ -18,7 +19,11 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" exact></Route>
+          <Route path="/" exact
+          element={<Home/>}
+          >
+            
+          </Route>
           <Route
             path="/chapter1/bisection"
             element={

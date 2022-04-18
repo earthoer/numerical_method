@@ -8,19 +8,19 @@ export const Navitem=[
     {
         id:2,
         title:"Root of Equation",
-        path:"./chapter1",
+        path:"./chapter1/bisection",
         cName:"nav-item",
     },
     {
         id:3,
         title:"Linear algebra",
-        path:"./chapter2",
+        path:"./chapter2/cramer",
         cName:"nav-item",
     },
     {
         id:4,
         title:"Interpolation and Extrapolation",
-        path:"./chapter3",
+        path:"/chapter3/newtondivide",
         cName:"nav-item",
     },
     

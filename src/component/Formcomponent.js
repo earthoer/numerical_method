@@ -45,6 +45,7 @@ const Formcomponent = (states) => {
   const [exeq,setexeq] = useState([]);
   const exeqref = useState(exeq)
   const [check,setcheck] = useState(false);
+  const [state,setstate] = useState(false);
   const [epcheck,setepcheck] = useState(0);
   const API_URL ='http://localhost:3001/items'
   useEffect(()=>{
@@ -201,34 +202,39 @@ useEffect(()=>{
     }
   } else if (ep === 2) {
     // console.log(mat);
-    if (document.getElementById("ans")) {
-      // console.log("test")
-      let holder = document.getElementById("ans");
-      holder.innerHTML = "";
-      for (let i = 0; i < answer.length; i++) {
-        let a = i+1
-        holder.innerHTML += "x"+a+" = "+JSON.parse(answer[i]).toFixed(6) + " ";
-      }
-    }
-    if (document.getElementById("err")) {
-      try{
-        let holder = document.getElementById("err");
-      holder.innerHTML = "";
-      if(st!=="conjugate"){
-        
-        for (let i = 0; i < arerr.length; i++) {
+    try{
+      if (document.getElementById("ans")) {
+        // console.log("test")
+        let holder = document.getElementById("ans");
+        holder.innerHTML = "";
+        for (let i = 0; i < answer.length; i++) {
           let a = i+1
-          console.log(error)
-          holder.innerHTML += "Error"+a+" = "+JSON.parse(error[i]).toFixed(10) + " ";
+          holder.innerHTML += "x"+a+" = "+JSON.parse(answer[i]).toFixed(6) + " ";
         }
       }
-      else{
-          console.log(error)
-          holder.innerHTML += "Error = "+JSON.parse(error[error.length-1]);
+      if (document.getElementById("err")) {
+        try{
+          let holder = document.getElementById("err");
+        holder.innerHTML = "";
+        if(st!=="conjugate"){
+          
+          for (let i = 0; i < arerr.length; i++) {
+            let a = i+1
+            // console.log(error)
+            holder.innerHTML += "Error"+a+" = "+JSON.parse(error[i]).toFixed(10) + " ";
+          }
+        }
+        else{
+            console.log(error)
+            holder.innerHTML += "Error = "+JSON.parse(error[error.length-1]);
+        }
+        }catch(e){
+          console.log(e.stack)
+        }
       }
-      }catch(e){
-        console.log(e)
-      }
+    }
+    catch (e){
+
     }
   }
  useEffect(()=>{
@@ -353,10 +359,11 @@ useEffect(()=>{
     event.preventDefault();
     setanswer([])
     let nar =[]
+    setstate(true);
     if (st === "bisection") {
+
       let l = Number(left);
       let r = Number(right);
-      console.log("bisection");
       if (equation.length > 0 && left.length > 0 && right.length > 0) {
           nar.push(Bisection(equation,l,r))
           // Chartcomponent2(nar[0][0][nar[0][0].length-1])
@@ -671,11 +678,11 @@ useEffect(()=>{
 
             <button className="button" type="submit">submit</button>
           </form>
-          {typeof data[0] !== undefined && (
+          {(typeof data[0] !== undefined && state===true) && (
             <div className="chart">
               {/* {console.log(typeof(data[0]))} */}
               <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
-              <Chartcomponent2 fx = {fx}></Chartcomponent2>
+              <Chartcomponent2 fx = {fx} l = {Number(left)} r = {Number(right)}></Chartcomponent2>
             </div>
           )}
         </div>

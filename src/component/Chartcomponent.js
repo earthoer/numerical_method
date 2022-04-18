@@ -40,13 +40,16 @@ const Chartcomponent = ({ dataerror, dataans }) => {
   let x2 = [];
   let Data = []
   try{
-    dataans =dataans.map((item)=>Number(item))
+    
    
   
     if(typeof dataans[0]==="object"){
+      
+      dataans =dataans.map((item)=>item.map((i)=>Number(i)))
       labels = Object.keys(dataans[0]).map((e) => String(Number(e)+1));
     }
     else{
+      dataans =dataans.map((item)=>Number(item))
       labels = Object.keys(dataans).map((e) => String(Number(e)+1));
   
     }
@@ -224,11 +227,11 @@ const Chartcomponent = ({ dataerror, dataans }) => {
         // height={700} 
         // width={1100}
       />
-      <Chart 
+      {/* <Chart 
         options={Data.options}
         series={Data.series}
         type="line"
-      />
+      /> */}
       </span>
     </div>
   );

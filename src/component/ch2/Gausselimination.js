@@ -51,9 +51,9 @@ const Gausseliminate = (equation,equationans)=>{
     for(let i  =mat.length-1;i>-1;i--){
         let sum = 0;
         // console.log(mat[i])
-        if(i ==mat.length-1){
+        if(i ===mat.length-1){
             ar[mat.length-1]=mat[i][mat.length]/mat[i][mat.length-1]
-            // console.log(mat[i][mat.length]," : ",mat[i][mat.length-1]," : ",ar[mat.length-1]=mat[i][mat.length]/mat[i][mat.length-1])
+            
         }
         else{
             for(let j  = mat.length-1;j>-1+z;j--){
@@ -64,15 +64,13 @@ const Gausseliminate = (equation,equationans)=>{
                 // console.log(mat[i][j])
                 sum += mat[i][j]
             }
-            // console.log(mat)
-            // console.log("z : ",z)
-            // console.log("sum : ",sum)
+    
             ar[z-1]=(mat[i][mat.length]-sum)/mat[i][z-1]
             // console.log(mat[i][mat.length]," - ",sum," / ",mat[i][z-1] )
             
 
         }
-        // console.log(ar)
+
         z--;
     }   
     return (
