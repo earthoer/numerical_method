@@ -1,6 +1,6 @@
 
 import {
-  Chart as ChartJS,
+  Chart as ChartJs,
   LineElement,
   CategoryScale,
   LinearScale,
@@ -11,19 +11,20 @@ import {
   Filler
 } from "chart.js";
 import {
-  Bar,
-  Line,
+  Line,Chart
 
 } from "react-chartjs-2";
-import Chart from "react-apexcharts"
-
-import zoomPlugin from "chartjs-plugin-zoom";
-
+// import Chart from "react-apexcharts"
+// import Hammer from "react-hammerjs"
+import Hammer  from 'hammerjs'
+import * as zoom from "chartjs-plugin-zoom";
+// import 'chartjs-plugin-zoom';
 import { ContextExclusionPlugin } from "webpack";
+import './Chartcomponent.css'
 let delayed;
 //   import Chart from './Ch'
-ChartJS.register(
-  zoomPlugin,
+ChartJs.register(
+  zoom,
   LineElement,
   CategoryScale,
   LinearScale,
@@ -188,8 +189,26 @@ const Chartcomponent = ({ dataerror, dataans }) => {
   }
 
   const options = ({
+  
     responsive:true,
+    maintainAspectRatio:false,
     plugins:{
+      zoom:{
+        pan:{
+          enabled:true,
+          mode:'x'
+        },
+        zoom:{
+          enabled:true,
+          drag:true,
+          mode:'xy',
+          wheel:{
+            enabled:true,
+            // drag:true,
+            // mode:'xy'
+          }
+        }
+      },
       legend:{
         position:"top"
       },
@@ -197,8 +216,7 @@ const Chartcomponent = ({ dataerror, dataans }) => {
         display:true
       },
       tooltip:{
-        // enabled:false,
-        // titleFontSize:10,
+        enabled:true,
         position:'nearest',
       }
     },
@@ -207,32 +225,32 @@ const Chartcomponent = ({ dataerror, dataans }) => {
     },
   }) 
 
-  
-  // console.log(data)
   return (
-  
-    <div >
-      <span className="Lines">
-      <Line 
+    <div>
+      {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js" integrity="sha512-klQv6lz2YR+MecyFYMFRuU2eAl8IPRo6zHnsc9n142TJuJHS8CG0ix4Oq9na9ceeg1u5EkBfZsFcV3U7J51iew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> */}
+      <Line
+        id ="mychart"
+        className="Lines"
         data={data}
         option={options}
-        // height={700}
-        // width={1100}
+        width={1100}
+        height={650}
+        plugins={[zoom]}
       />
-      </span>
-      <span className="Lines">
-      <Line 
+      <Line
+        className="Lines"
         data={data2}
         option={options}
-        // height={700} 
-        // width={1100}
+        width={1100}
+        height={650}
       />
-      {/* <Chart 
-        options={Data.options}
-        series={Data.series}
-        type="line"
-      /> */}
-      </span>
+      <script>
+        {/* const ctx = document.getElementById('mychart').getContext('2d')
+        const myChart = new ChartJs(ctx,{
+          type:"line"
+        }) */}
+      </script>
+    
     </div>
   );
 };

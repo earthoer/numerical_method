@@ -20,8 +20,10 @@ import {
   import { ContextExclusionPlugin } from "webpack";
   import Chart from "react-apexcharts"
   import { useState,useEffect, createElement,useRef } from "react";
+  import "./Chartcomponent2.css"
   let delayed;
   //   import Chart from './Ch'
+
   ChartJS.register(
     zoomPlugin,
     LineElement,
@@ -44,48 +46,37 @@ import {
     let data =[]
     let labels = []
     let Data = []
-    // console.log(fx)
+    console.log(fx)
     // console.log(l," ",r)
     let count =0;
     if(fx.length>0){
-        for(let i =-15; i<15;i++){
+        for(let i =-40; i<41;i+=1){
                 labels.push(i)
                 data.push(Fx.evaluate({x:i}))
-                console.log("labels : ",labels[count],"f(x) = ",Fx.toString()," = ",Fx.evaluate({x:i}))
+                // console.log("labels : ",labels[count],"f(x) = ",Fx.toString()," = ",Fx.evaluate({x:i}))
             count++;
         }
         Data = {
           options: {
             chart: {
-              // height:4000,
-              id: "basic-line",
-              zoom:{
-                type:'x',
-                enabled:true,
-                autoScaledYaxis:true
-              },
+              type:"line",
+              id: "chart1",
+
               toolbar:{
-                autoSelected:'pan'
+                autoSelected:'pan',
+                show:false
               }
-              // toolbar:{
-              //   show:true,
-              //   tools:{
-              //     zoom:true,
-              //     zoomin:true,
-              //     zoomout:true,
-              //     pan:true,
-              //     download:false
-              //   }
-               
-              // }
+              ,
+              
             },
+            colors:['#FF0000'],
               stroke:{
                 curve:"straight"
               },
               grid:{
                 padding:{
                   right:20,
-                  left:18,
+                  left:16,
                 }
               },
               
@@ -147,23 +138,66 @@ import {
               data: data
             }
           ],
+
+          optionsLine:{
+            chart:{
+              id:'chart2',
+              type:'area',
+              brush:{
+                target:'chart1',
+                enabled: true,
+              },
+              selection:{
+                enabled: true,
+                xaxis: {
+                  min:5,
+                  max:75
+                }
+              }
+            },
+            colors:['black'],
+            fill:{
+              type:'gradient',
+              gradient:{
+                opacityFrom:0.9,
+                opacityTO:0.1
+              }
+            },
+            yaxis: {
+              tickAmount:2
+            }
+            ,
+            xaxis: {
+              categories: labels
+            }
+          }
           
         }
 
     }  
     return (
-    
-      <div >
-        
-        {fx.length>0&&
-        <Chart 
-        options={Data.options}
-        series={Data.series}
-        type="line"
-      />}
-        
+      <div>
+        {fx.length > 0 && (
+          <div   className="chart2"> 
+            <Chart
+              
+              options={Data.options}
+              series={Data.series}
+              type="line"
+              height={650}
+            />
+            {/* {console.log(Data.seriesLine)} */}
+            <Chart
+              // className="chart"
+              options={Data.optionsLine}
+              series={Data.series}
+              type ="area"
+              height={200}
+            />
+          </div>
+        )}
       </div>
-    )
+    );
   };
   export default Chartcomponent2;
   

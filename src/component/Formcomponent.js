@@ -46,13 +46,18 @@ const Formcomponent = (states) => {
   const exeqref = useState(exeq)
   const [check,setcheck] = useState(false);
   const [state,setstate] = useState(false);
+  const [state2,setstate2] = useState(true);
   const [epcheck,setepcheck] = useState(0);
+  const [ep,setep] = useState(1)
+  const [value,setvalue] = useState("select ex equation")
+  const epref = useRef(ep)
   const API_URL ='http://localhost:3001/items'
   useEffect(()=>{
     const fetchitem = async ()=> {
       try{
         const response = await fetch(API_URL)
         const listeq = await response.json()
+        // console.log(typeof(listeq))
         setitem(listeq)
         // setitem([])
        
@@ -70,7 +75,8 @@ const Formcomponent = (states) => {
 useEffect(()=>{
   itemref.current = item
   exeqref.current =exeq
-},[item,exeq])
+  epref.current =ep
+},[item,exeq,ep])
   const inputinter = (e)=>{
     artemp[e.target.id] = JSON.parse(e.target.value)
     let ar =[]
@@ -90,7 +96,8 @@ useEffect(()=>{
   const inputmat = (e)=>{
     // console.log(e.target.value)
     mat[e.target.id[1]][e.target.id[4]] = Number(e.target.value)
-    console.log(mat)
+    console.log(e.target.id)
+    // console.log(mat)
     setmat(mat)
     setEquation(JSON.stringify(mat))
       
@@ -102,6 +109,7 @@ useEffect(()=>{
     setmat2(mat2)
     setEquationans(JSON.stringify(mat2))
     
+    
   }
   const inputrow = (e) => {
     setrow(e.target.value);
@@ -112,6 +120,8 @@ useEffect(()=>{
 
   const inputeq = (e) => {
     setEquation(e.target.value);
+    setfx(e.target.value)
+    setstate(false)
   };
   const inputtemp = (e) => {
     console.log(e.target.value)
@@ -131,10 +141,7 @@ useEffect(()=>{
 
   let leftinput = "";
   let rightinput = "";
-  let ar1 = [];
-  let ar2 = [];
-  let ar3 = [];
-  // console.log(data)
+
   if (String.prototype.splice === undefined) {
     /**
      * Splices text within a string.
@@ -152,38 +159,41 @@ useEffect(()=>{
       );
     };
   }
-  function geterror(x, y) {
-    return abs((x - y) / x);
-  }
-
-
   let st = JSON.stringify(Object.values(states));
   st = st.slice(2, -2);
+  useEffect(() => {
+    if (
+      st === "bisection" ||
+      st === "falseposition" ||
+      st === "onepoint" ||
+      st === "newtonraphson"
+    ) {
+      setep(1);
+      // console.log(ep)
+      setEquation("")
+      setvalue("select ex equation")
+    } else if (
+      st === "cramer" ||
+      st === "gauseeliminate" ||
+      st === "gaussjordan" ||
+      st === "lu" ||
+      st === "jacobi" ||
+      st === "seidal" ||
+      st === "conjugate"
+    ) {
+      setep(2);
+      setvalue("select ex equation")
+      setEquation("")
+    } else {
+      setep(3);
+      setvalue("select ex equation")
+      setEquation("")
+    }
+  }, [st]);
 
-  let ep = 1;
-  if (
-    st === "bisection" ||
-    st === "falseposition" ||
-    st === "onepoint" ||
-    st === "newtonraphson"
-  ) {
-    ep = 1;
-  } else if(
-    st==="cramer"||
-    st==="gauseeliminate"||
-    st==="gaussjordan"||
-    st==="lu"||
-    st==="jacobi"||
-    st==="seidal"||
-    st==="conjugate"
-  ){
-    ep = 2;
-  }
-  else{
-    ep =3;
-  }
 
   if (ep === 1) {
+    
     if (document.getElementById("l")) {
       if (st === "bisection") {
         leftinput = "ใส่ค่าด้านซ้าย";
@@ -201,10 +211,8 @@ useEffect(()=>{
       }
     }
   } else if (ep === 2) {
-    // console.log(mat);
     try{
       if (document.getElementById("ans")) {
-        // console.log("test")
         let holder = document.getElementById("ans");
         holder.innerHTML = "";
         for (let i = 0; i < answer.length; i++) {
@@ -248,7 +256,7 @@ useEffect(()=>{
       for(let i = 0;i<column;i++){
         for(let j=0;j<row;j++){
           let id = "["+i+"]["+j+"]"
-          matrixinput.push(<input id={id} type="number" className="inputmatrix" onChange={inputmat}/>)
+          matrixinput.push(<input id={id}  type="number" className="inputmatrix" onChange={inputmat}/>)
           count++;
         }
         matrixinput.push(<br/>)
@@ -513,6 +521,8 @@ useEffect(()=>{
     setanswer([]);
     seterror([]);
     seterr([]);
+    setstate(false)
+    // setEquationans([])
   }, [equation, left, right,equationans]);
   let tempar =[]
   let temper = []
@@ -571,7 +581,7 @@ useEffect(()=>{
 
     input.push(
       <Dropd
-        placeholder="select ex equation"
+        placeholder={value}
         list={ar}
         onItemChange={(data) => {
           
@@ -660,7 +670,7 @@ useEffect(()=>{
             
               <div className={check? "inputtrue":"inputfalse"}>
                 <label>Put the equation : </label>
-                <input type="text" onChange={inputeq} />
+                <input type="text" onChange={inputeq}  />
               </div>
             
             <div align="center">
@@ -679,10 +689,13 @@ useEffect(()=>{
             <button className="button" type="submit">submit</button>
           </form>
           {(typeof data[0] !== undefined && state===true) && (
+            
             <div className="chart">
-              {/* {console.log(typeof(data[0]))} */}
-              <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
+              {/* {console.log("fx : ",fx)} */}
+              
               <Chartcomponent2 fx = {fx} l = {Number(left)} r = {Number(right)}></Chartcomponent2>
+              <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
+              
             </div>
           )}
         </div>

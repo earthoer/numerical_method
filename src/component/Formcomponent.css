@@ -19,17 +19,12 @@ td{
 .inputfalse{
     display: none;
 }
-.chart{
-    margin: 5px 10px 5px 10px;
-    justify-content: center;
-    text-align: center;
-    width: 85%;
-    position:relative;
-    border:1.5px solid black;
-    background-color: rgb(228, 221, 196);
-    box-shadow: 5px 5px 10px rgba(0,0,0,1); 
-}
 
+.chart{
+  width: 72%;
+  margin:20px;
+  
+}
 .inputmatrix{
     width: 40px;
     
