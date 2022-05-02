@@ -4,6 +4,8 @@ import './Formcomponent.css'
 import Chart from "./Chartcomponent";
 import Select from 'react-select'
 import {MathJax,MathJaxContext} from "better-react-mathjax"
+import Proof from "./ch1/Proof"
+import Proof2 from "./ch2/Proof2"
 import Bisection from "./ch1/Bisection";
 import FalsePosition from "./ch1/FalsePosition";
 import OnePoint from "./ch1/OnePoint";
@@ -21,7 +23,8 @@ import React from 'react'
 import Chartcomponent from "./Chartcomponent";
 import Chartcomponent2 from "./Chartcomponent2";
 import Dropd from "react-dropd"
-import FormComponent from "./Formcomponent.css"
+
+
 const Formcomponent = (states) => {
   const [equation, setEquation] = useState("");
   const [left, setleft] = useState("");
@@ -42,6 +45,8 @@ const Formcomponent = (states) => {
   const [intery,setintery] = useState([])
   const [item,setitem] = useState([])
   const itemref = useRef(item)
+  const [leftinput,setleftinput] = useState("");
+  const [rightinput,setrightinput] = useState("");
   const [exeq,setexeq] = useState([]);
   const exeqref = useState(exeq)
   const [check,setcheck] = useState(false);
@@ -52,14 +57,40 @@ const Formcomponent = (states) => {
   const [value,setvalue] = useState("select ex equation")
   const epref = useRef(ep)
   const API_URL ='http://localhost:3001/items'
+  const API_LOGIN ='http://localhost:3001/login'
+  const axios = require('axios')
   useEffect(()=>{
     const fetchitem = async ()=> {
       try{
-        const response = await fetch(API_URL)
-        const listeq = await response.json()
-        // console.log(typeof(listeq))
-        setitem(listeq)
-        // setitem([])
+        let key
+        await axios.post(API_LOGIN,{
+          email:"earthgodna@gmail.com",
+          password:"0836054655"
+        }).then(response =>{
+          key = response.data.accessToken;
+        }).catch(error=>{
+          console.log(error.response.data.error)
+        })
+
+
+        // console.log(key)
+        await axios.get(API_URL
+          ,{
+          headers: {
+            'Authorization': `Bearer ${key}`
+          }
+        }
+        )
+        .then(response=>{
+          setitem(response.data)
+        }).catch(error=>{
+          console.log(error)})
+
+        // console.log(item)
+
+        // const response = await fetch(API_URL)
+        // const listeq = await response.json()
+        // setitem(listeq)
        
         
       }
@@ -94,10 +125,28 @@ useEffect(()=>{
   }
 
   const inputmat = (e)=>{
-    // console.log(e.target.value)
-    mat[e.target.id[1]][e.target.id[4]] = Number(e.target.value)
-    console.log(e.target.id)
-    // console.log(mat)
+    let id = e.target.id
+    let id1 =""
+    let id2 =""
+    let count =1;
+    // console.log(id)
+    for(let i = 1;i<id.length;i++){
+      if(id[i]===']'){
+        count+=2
+        break;
+      }
+      // console.log(id[i])
+      id1+=id[i]
+      count++;
+    }
+    for(let i = count;i<id.length;i++){
+      if(id[i]===']')break;
+      // console.log(id[i])
+      id2+=id[i]
+    }
+    // console.log("id1 : ",id1," count ",count)
+    // console.log("id2 : ",id2)
+    mat[JSON.parse(id1)][JSON.parse(id2)] = Number(e.target.value)
     setmat(mat)
     setEquation(JSON.stringify(mat))
       
@@ -139,8 +188,7 @@ useEffect(()=>{
     setEquationans(e.target.value);
   };
 
-  let leftinput = "";
-  let rightinput = "";
+
 
   if (String.prototype.splice === undefined) {
     /**
@@ -168,10 +216,22 @@ useEffect(()=>{
       st === "onepoint" ||
       st === "newtonraphson"
     ) {
+      setstate(false)
       setep(1);
-      // console.log(ep)
-      setEquation("")
-      setvalue("select ex equation")
+      console.log("1  : ",st)
+      if (document.getElementById("l")) {
+        if (st === "bisection" || st ==="falseposition") {
+          setleftinput("ใส่ค่าด้านซ้าย")
+          setrightinput("ใส่ค่าด้านขวา")
+        }  else if (st === "onepoint") {
+          setleftinput("ใส่ค่าเริ่มต้น")
+        } else if (st === "newtonraphson") {
+          setleftinput("ใส่ค่าเริ่มต้น")
+        }
+      }
+      setEquation("");
+      setvalue("select ex equation");
+
     } else if (
       st === "cramer" ||
       st === "gauseeliminate" ||
@@ -182,73 +242,27 @@ useEffect(()=>{
       st === "conjugate"
     ) {
       setep(2);
-      setvalue("select ex equation")
-      setEquation("")
+      console.log("2 : ",st)
+      try {
+        
+        
+      } catch (e) {}
+      setvalue("select ex equation");
+      setEquation("");
     } else {
       setep(3);
-      setvalue("select ex equation")
-      setEquation("")
+      setvalue("select ex equation");
+      setEquation("");
     }
+
   }, [st]);
 
 
-  if (ep === 1) {
-    
-    if (document.getElementById("l")) {
-      if (st === "bisection") {
-        leftinput = "ใส่ค่าด้านซ้าย";
-        rightinput = "ใส่ค่าด้านขวา";
-      } else if (st === "falseposition") {
-        leftinput = "ใส่ค่าด้านซ้าย";
-        rightinput = "ใส่ค่าด้านขวา";
-      } else if (st === "onepoint") {
-        // console.log("st  :      ", st);
-        
-        leftinput = "ใส่ค่าเริ่มต้น";
-      } else if (st === "newtonraphson") {
-        console.log("st  :      ", st);
-        leftinput = "ใส่ค่าเริ่มต้น";
-      }
-    }
-  } else if (ep === 2) {
-    try{
-      if (document.getElementById("ans")) {
-        let holder = document.getElementById("ans");
-        holder.innerHTML = "";
-        for (let i = 0; i < answer.length; i++) {
-          let a = i+1
-          holder.innerHTML += "x"+a+" = "+JSON.parse(answer[i]).toFixed(6) + " ";
-        }
-      }
-      if (document.getElementById("err")) {
-        try{
-          let holder = document.getElementById("err");
-        holder.innerHTML = "";
-        if(st!=="conjugate"){
-          
-          for (let i = 0; i < arerr.length; i++) {
-            let a = i+1
-            // console.log(error)
-            holder.innerHTML += "Error"+a+" = "+JSON.parse(error[i]).toFixed(10) + " ";
-          }
-        }
-        else{
-            console.log(error)
-            holder.innerHTML += "Error = "+JSON.parse(error[error.length-1]);
-        }
-        }catch(e){
-          console.log(e.stack)
-        }
-      }
-    }
-    catch (e){
 
-    }
-  }
  useEffect(()=>{
   
     try{
-      
+      setEquation("")
       if(ep===2){
         let count = 0
       let holder = document.getElementById("drawmatrix");
@@ -272,29 +286,7 @@ useEffect(()=>{
             }
             mat[i]=artemp;
           }
-      // if(mat.length===0&&row>0&&column>0){
-      //   for(let i = 0;i<column;i++){
-      //     let artemp = []
-      //     for(let j=0;j<row;j++){
-      //       artemp.push(0)
-      //     }
-      //     mat[i]=artemp;
-      //   }
-      // }
-      // else if(mat[0].length!==row||mat.length!==column){
-
-      //   setmat([])
-        
-      //   let ar =[]
-      //   for(let i = 0;i<column;i++){
-      //     let artemp = []
-      //     for(let j=0;j<row;j++){
-      //       artemp.push(0)
-      //     }
-      //     ar[i] =artemp
-      //   }
-      //   setmat(ar)
-      // }
+      console.log(mat)
       
       let holder2 = document.getElementById("drawmatrix2")
       let answerinput = []
@@ -337,6 +329,8 @@ useEffect(()=>{
     }
     
  },[row,column])
+
+
  useEffect(()=>{
   if(ep===3){
     try{
@@ -363,127 +357,225 @@ useEffect(()=>{
     }
   }
 },[row])
+
+  const checkleft=(data,col)=>{
+    let count=0
+    for(let i=0;i<data.length;i++){
+      if(data[i]==','){
+        console.log(data[i+1])
+        if(!data[i+1]) return false;
+        else if(data[i+1]==',')return false;
+        else if(data.length<i+1)return false
+        else count++;
+      }
+      
+    }
+    // console.log(count,col)
+    if(count==col-1)return true
+    return false;
+  }
   const onSubmitf = (event) => {
     event.preventDefault();
     setanswer([])
     let nar =[]
-    setstate(true);
-    if (st === "bisection") {
-
-      let l = Number(left);
-      let r = Number(right);
-      if (equation.length > 0 && left.length > 0 && right.length > 0) {
-          nar.push(Bisection(equation,l,r))
-          // Chartcomponent2(nar[0][0][nar[0][0].length-1])
-          setanswer(nar[0][0]);
-          seterror(nar[0][1]);
-
-      }
-    } else if (st === "falseposition") {
-      let l = Number(left);
-      let r = Number(right);
-      if (equation.length > 0 && left.length > 0 && right.length > 0) {
-          nar.push(FalsePosition(equation,l,r))
-          setanswer(nar[0][0]);
-          seterror(nar[0][1]);
-      }
-    } else if (st === "onepoint") {
-        if (equation.length > 0) {
-          nar.push(OnePoint(equation,left))
-          setanswer(nar[0][0]);
-          seterror(nar[0][1]);
+    
+    if(ep===1){
+      if((st==="bisection"||st === "falseposition")&&(equation===""||left===""||right===""||JSON.parse(left)>JSON.parse(right))){
+        if(equation===""){
+          alert("Please select the quesion!")
         }
- 
-    } else if (st === "newtonraphson") {
-        if (equation.length > 0) {
-          nar.push(Newtonraphson(equation,left))
-          setanswer(nar[0][0]);
-          seterror(nar[0][1]);
+        else if(JSON.parse(left)>JSON.parse(right)){
+          alert("Please enter right more than left")
         }
-    } else if (ep === 2) {
+        else{
+          alert("Please enter left and right")
+        }
+      }  
+      else{
+        setstate(true);
+        if (st === "bisection") {
+
+          let l = Number(left);
+          let r = Number(right);
+          if (equation.length > 0 && left.length > 0 && right.length > 0) {
+              nar.push(Bisection(equation.replace("x","(x)"),l,r))
+              // Chartcomponent2(nar[0][0][nar[0][0].length-1])
+              console.log(nar[0][0])
+              setanswer(nar[0][0]);
+              seterror(nar[0][1]);
+    
+          }
+        } else if (st === "falseposition") {
+          let l = Number(left);
+          let r = Number(right);
+          if (equation.length > 0 && left.length > 0 && right.length > 0) {
+              nar.push(FalsePosition(equation.replace("x","(x)"),l,r))
+              setanswer(nar[0][0]);
+              seterror(nar[0][1]);
+          }
+        } else if (st === "onepoint") {
+            if (equation.length > 0) {
+              nar.push(OnePoint(equation.replace("x","(x)"),left))
+              setanswer(nar[0][0]);
+              seterror(nar[0][1]);
+            }
+     
+        } else if (st === "newtonraphson") {
+            if (equation.length > 0) {
+              nar.push(Newtonraphson(equation.replace("x","(x)"),left))
+              setanswer(nar[0][0]);
+              seterror(nar[0][1]);
+            }
+        }
+      }
+    }
+    else if (ep === 2) {
+      
+      let ans2
+      let err2
       document.getElementById("ans").innerHTML =""
-      if (st === "cramer") {
+      if(!equation)alert("Plese select equation correctly")
+      else if (st === "cramer") {
+        setstate(true);
           let eq = JSON.parse(equation);
+          console.log(st)
           const eqans = JSON.parse(equationans);
           nar.push(CramerRule(eq,eqans))
           setanswer(nar[0])
+          ans2= nar[0]
      
       }
       else if(st==="gauseeliminate"){
+        setstate(true);
         console.log(st)
         nar.push(Gausseliminate(equation,equationans))
         console.log(nar)
         setanswer(nar[0])
+        ans2 = nar[0]
       }
       else if(st==="gaussjordan"){
+        setstate(true);
         console.log(st)
         nar.push(GauseJordan(equation,equationans))
         setanswer(nar[0])
         console.log(nar[0])
+        ans2=nar[0]
           
       }
-      else if(st==="jacobi"){
-
-        nar.push(Jacobi(equation,equationans,left))
-        let temp = transpose(nar[0][1])
-        let temp2 = Object.keys(temp).map((e) =>temp[e][temp[0].length-1]);
-        seterror(temp2)
-        setarans(transpose(nar[0][0]))
-        seterr(transpose(nar[0][1]))
-        setanswer(nar[0][2])
-      }
-      else if(st==="seidal"){
-        nar.push(Gaussseidal(equation,equationans,left))
-        let temp = transpose(nar[0][1]) 
-        let temp2 = Object.keys(temp).map((e) =>temp[e][temp[0].length-1]);
-        seterror(temp2)
-        seterr(transpose(nar[0][1]))
-        setarans(transpose(nar[0][0]))
-        setanswer(nar[0][2])
-      }
-      else if(st==="conjugate"){
-        nar.push(Conjugate(equation,equationans,left))
-        let x = JSON.parse(JSON.stringify(nar[0][0]))
-        let y = JSON.parse(JSON.stringify(nar[0][1]))
-        let z = JSON.parse(JSON.stringify(nar[0][2]))
-        let ans  =[]
-        let dataans = []
-        let ch = ""
-        let  i =1
-        for( i  = 1;i<x.length;i++){
-          if(x[i]==']'){
-            ans.push(parseFloat(ch))
-            break;
+      else{
+        console.warn(equation)
+        
+        if(JSON.parse(equation).length!==JSON.parse(equation)[0].length)alert("Please enter square matrix ")
+        //symmetric matrix
+        else if(JSON.stringify(transpose(JSON.parse(equation)))!==JSON.stringify(JSON.parse(equation)))alert("Please enter symmetry matrix")
+        else if(checkleft(left,JSON.parse(equation)[0].length)){
+          setstate(true)
+          if(st==="jacobi"){
+            // console.log(equation,equationans,left)
+            nar.push(Jacobi(equation,equationans,left))
+            
+            let temp = transpose(nar[0][1])
+            let temp2 = Object.keys(temp).map((e) =>temp[e][temp[0].length-1]);
+            seterror(temp2)
+            setarans(transpose(nar[0][0]))
+            seterr(transpose(nar[0][1]))
+            setanswer(nar[0][2])
+            ans2=nar[0][2]
+            err2=temp2
           }
-          if(x[i]==','){
-            ans.push(parseFloat(ch))
+          else if(st==="seidal"){
+            nar.push(Gaussseidal(equation,equationans,left))
+            let temp = transpose(nar[0][1]) 
+            let temp2 = Object.keys(temp).map((e) =>temp[e][temp[0].length-1]);
+            seterror(temp2)
+            seterr(transpose(nar[0][1]))
+            setarans(transpose(nar[0][0]))
+            setanswer(nar[0][2])
+            ans2=nar[0][2]
+            err2=temp2
+          }
+          else if(st==="conjugate"){
+            nar.push(Conjugate(equation,equationans,left))
+            let x = JSON.parse(JSON.stringify(nar[0][0]))
+            let y = JSON.parse(JSON.stringify(nar[0][1]))
+            let z = JSON.parse(JSON.stringify(nar[0][2]))
+            let ans  =[]
+            let dataans = []
+            let ch = ""
+            let  i =1
+            for( i  = 1;i<x.length;i++){
+              if(x[i]==']'){
+                ans.push(parseFloat(ch))
+                break;
+              }
+              if(x[i]==','){
+                ans.push(parseFloat(ch))
+                ch = ""
+                i++;
+              }
+              ch = ch+x[i]
+            }
             ch = ""
-            i++;
-          }
-          ch = ch+x[i]
-        }
-        ch = ""
-        for(let j = 0;j<y.length;j++){
-          let temp = []
-          for( i  = 1;i<y[j].length;i++){
-            if(y[j][i]===']'){
-              temp.push(parseFloat(ch))
-              ch = ""
-              break;
+            for(let j = 0;j<y.length;j++){
+              let temp = []
+              for( i  = 1;i<y[j].length;i++){
+                if(y[j][i]===']'){
+                  temp.push(parseFloat(ch))
+                  ch = ""
+                  break;
+                }
+                if(y[j][i]===','){
+                  temp.push(parseFloat(ch))
+                  ch = ""
+                  i++;
+                }
+                ch = ch+y[j][i]
+              }
+              dataans.push(temp)
             }
-            if(y[j][i]===','){
-              temp.push(parseFloat(ch))
-              ch = ""
-              i++;
-            }
-            ch = ch+y[j][i]
+            setarans(transpose(dataans))
+            seterr(z[z.length-1])
+            seterror(z)
+            setanswer(ans)
+            console.log(ans)
+            ans2= ans
+            err2 = z[z.length-1]
           }
-          dataans.push(temp)
         }
-        setarans(transpose(dataans))
-        seterr(z[z.length-1])
-        seterror(z)
-        setanswer(ans)
+        else{
+          alert("Please enter starting value correctly")
+        }
+      }
+      if (document.getElementById("ans")) {
+        // console.log(document.getElementById("ans"));
+        let holder = document.getElementById("ans");
+        holder.innerHTML = "";
+        console.log(ans2);
+        for (let i = 0; i < ans2.length; i++) {
+          let a = i + 1;
+          holder.innerHTML +=
+            "x" + a + " = " + JSON.parse(ans2[i]).toFixed(6) + " ";
+        }
+      }
+      if (document.getElementById("err")) {
+        try {
+          let holder = document.getElementById("err");
+          holder.innerHTML = "";
+          if (st !== "conjugate") {
+            for (let i = 0; i < err2.length; i++) {
+              let a = i + 1;
+              // console.log(error)
+              holder.innerHTML +=
+                "Error" + a + " = " + JSON.parse(err2[i]).toFixed(10) + " ";
+            }
+          } else {
+            // console.log(error);
+            holder.innerHTML +=
+              "Error = " + JSON.parse(err2);
+          }
+        } catch (e) {
+          console.log(e.stack);
+        }
       }
     }
     else if(ep ===3){
@@ -523,6 +615,7 @@ useEffect(()=>{
     seterr([]);
     setstate(false)
     // setEquationans([])
+    // setEquationans([])
   }, [equation, left, right,equationans]);
   let tempar =[]
   let temper = []
@@ -547,6 +640,8 @@ useEffect(()=>{
     }
   }
   useEffect(() => {
+    setEquationans([])
+    setstate(false)
     let holder = document.getElementById("drop");
     let input = [];
     let ar =[]
@@ -583,11 +678,14 @@ useEffect(()=>{
       <Dropd
         placeholder={value}
         list={ar}
+        // ref={(s)=>{setvalue(s)}}
+        className="dropd_drop"
         onItemChange={(data) => {
-          
+          setstate(false)
           if (data !== "custom") {
             setcheck(false)
             if(ep===1){
+              // console.log(data.replace("x","(x)"))
               setEquation(data);
               setfx(data)
             }
@@ -604,8 +702,8 @@ useEffect(()=>{
               a = data.slice(0,count)
 
               b = data.slice(count+1,data.length)
-              console.log(a)
-              console.log(b)
+              // console.log(a)
+              // console.log(b)
               setEquation(a)
               setEquationans(b)
 
@@ -624,7 +722,9 @@ useEffect(()=>{
           if(data===""||data==="custom"){
             setcheck(true)
           }
-        }}
+        }
+        
+      }
       />
     )
     ReactDOM.render(input,holder)
@@ -652,114 +752,164 @@ useEffect(()=>{
   };
   return (
     <div align="center" className="form">
-      <h1 className="Header">{st}</h1>
-      <div id="drop"></div>
-      <br />
-      <br />
+      <div className="topform">
+        <h1 className="Header">{st}</h1>
+        <div id="drop"></div>
+        <br />
+        <br />
+      </div>
       {ep === 1 && (
         <div>
-          <div>
+         <div className="topform">
+         <div>
             <MathJaxContext>Question : {mt(equation)}</MathJaxContext>
             <br />
             Answer: {answer[answer.length - 1]}
           </div>
-
           <p> error: {error[error.length - 1]}</p>
-          <form onSubmit={onSubmitf} id="roote">
-            {/* {console.log(check)} */}
-            
-              <div className={check? "inputtrue":"inputfalse"}>
-                <label>Put the equation : </label>
-                <input type="text" onChange={inputeq}  />
-              </div>
-            
+           <form onSubmit={onSubmitf} id="roote">
+            <div className={check ? "inputtrue" : "inputfalse"}>
+              <input
+                type="text"
+                className="input"
+                onChange={inputeq}
+                placeholder="Put the equation"
+              />
+            </div>
+
             <div align="center">
               <div id="l">
-                <label>{leftinput}</label>
-                <input type="text" onChange={inputleft} />
+                {(st === "bisection" || st === "falseposition") && (
+                  <div>
+                    <input
+                      className="input"
+                      type="text"
+                      onChange={inputleft}
+                      placeholder="Left input"
+                    />
+                  </div>
+                )}
+                {(st === "onepoint" || st === "newtonraphson") && (
+                  <div>
+                    <input
+                      className="input"
+                      type="text"
+                      onChange={inputleft}
+                      placeholder="Startvalue"
+                    />
+                  </div>
+                )}
               </div>
               {st !== "newtonraphson" && st !== "onepoint" && (
                 <div id="r">
-                  <label>{rightinput}</label>
-                  <input type="text" onChange={inputright} />
+                  <input
+                    className="input"
+                    type="text"
+                    onChange={inputright}
+                    placeholder="Right input"
+                  />
                 </div>
               )}
             </div>
 
-            <button className="button" type="submit">submit</button>
+            <button className="button" type="submit">
+              submit
+            </button>
           </form>
-          {(typeof data[0] !== undefined && state===true) && (
-            
+         </div>
+         
+          {typeof data[0] !== undefined && state === true && (
             <div className="chart">
               {/* {console.log("fx : ",fx)} */}
-              
-              <Chartcomponent2 fx = {fx} l = {Number(left)} r = {Number(right)}></Chartcomponent2>
+
+              <Chartcomponent2
+                fx={fx.replace("x", "(x)")}
+                l={Number(left)}
+                r={Number(right)}
+              ></Chartcomponent2>
               <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
-              
+              <Proof eq={equation} x={answer[answer.length - 1]} />
             </div>
           )}
         </div>
       )}
       {ep === 2 && (
-        <div>
+        <div >
           <MathJaxContext>
             <p>
               Matrix : {mt(equation)} ,{mt(equationans)}
             </p>
           </MathJaxContext>
+
           <p>Answer:</p>
           <p id="ans"></p>
+
           {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
             <p id="err"></p>
           )}
-          
-            <div className={check? "inputtrue":"inputfalse"}>
-              <span>
-                row:
-                <input
-                  type="number"
-                  onChange={inputrow}
-                  className="inputmatrix"
-                ></input>
-              </span>
-              <span>
-                column:
-                <input
-                  type="number"
-                  onChange={inputcolumn}
-                  className="inputmatrix"
-                ></input>
-              </span>
-              <div className="matrix">
-                <div>
-                  <p>matrixA</p>
-                  <div id="drawmatrix" className="matrix1" />
-                </div>
-                <div>
-                  <p>matrixB</p>
-                  <div id="drawmatrix2" className="matrix2" />
-                </div>
+
+          <div className={check ? "inputtrue" : "inputfalse"}>
+            <span>
+              row:
+              <input
+                type="number"
+                onChange={inputrow}
+                className="inputmatrix"
+              ></input>
+            </span>
+            <span>
+              column:
+              <input
+                type="number"
+                onChange={inputcolumn}
+                className="inputmatrix"
+              ></input>
+            </span>
+            <div className="matrix">
+              <div>
+                <p>matrixA</p>
+                <div id="drawmatrix" className="matrix1" />
+              </div>
+              <div>
+                <p>matrixB</p>
+                <div id="drawmatrix2" className="matrix2" />
               </div>
             </div>
-          
+          </div>
 
           <form onSubmit={onSubmitf} id="linear">
             {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
               <div>
-                <label>ใส่ค่าเริ่มต้นขั้นด้วย ,(ตามจำนวน column)</label>
-                <input type="text" onChange={inputleft} />
+                <input
+                  className="input"
+                  type="text"
+                  onChange={inputleft}
+                  placeholder="ใส่ค่าเริ่มต้นขั้นด้วย ,(ตามจำนวน column)"
+                />
               </div>
             )}
             <br />
-            <button className="button" type="submit">submit</button>
+            <button className="button" type="submit">
+              submit
+            </button>
           </form>
+          {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
+            <div className="chart">
+              <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
+            </div>
+          )}
+          {state === true && (
+            <div className="chart">
+              <Proof2
+                equation={equation}
+                equationans={equationans}
+                ans={answer}
+              />
+            </div>
+          )}
         </div>
       )}
-      {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
-        <div className="chart">
-          <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
-        </div>
-      )}
+
       {ep === 3 && (
         <div>
           <span>
@@ -781,7 +931,9 @@ useEffect(()=>{
               <input type="text" onChange={inputleft}></input>
             </span>
             <br />
-            <button className="button" type="submit">confirm</button>
+            <button className="button" type="submit">
+              confirm
+            </button>
           </form>
         </div>
       )}

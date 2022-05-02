@@ -6,12 +6,25 @@ body {
     font-family: 'Crimson Pro',serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgba(16, 114, 171, 0.81);
-  /* margin-bottom: 30px; */
-  /* margin-top: 1%; */
+  /* /* background-color: rgba(16, 114, 171, 0.81); */
+  background-color: #272791   ;
+  /* background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%); */
+  /* background-color: rgba(0, 0, 0, 0.81);  */
+
+  
   
 }
-
+/* html{
+  
+} */
+/* .bg{
+  
+  height:100%;
+  weight:100%
+} */
+body,html{
+  height:100%;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

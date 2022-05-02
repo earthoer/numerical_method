@@ -2,6 +2,7 @@ import Formcomponent from "../Formcomponent";
 import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index,row,column,transpose, ConditionalNodeDependencies} from "mathjs";
 
 const CramerRule = (eq,eqans)=>{
+    
     const mata = matrix(eq);
           let rows = mata.size()[0];
           let columns = mata.size()[1];
@@ -17,7 +18,7 @@ const CramerRule = (eq,eqans)=>{
             let ans = detc/deta
             ar.push(ans)
           } 
-
+    console.log(ar)
     return (
         ar
         )
