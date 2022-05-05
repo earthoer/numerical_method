@@ -85,14 +85,6 @@ const Formcomponent = (states) => {
           setitem(response.data)
         }).catch(error=>{
           console.log(error)})
-
-        // console.log(item)
-
-        // const response = await fetch(API_URL)
-        // const listeq = await response.json()
-        // setitem(listeq)
-       
-        
       }
       catch (e){
         console.log(e.stack)
@@ -129,7 +121,7 @@ useEffect(()=>{
     let id1 =""
     let id2 =""
     let count =1;
-    // console.log(id)
+    console.log(e.target.value)
     for(let i = 1;i<id.length;i++){
       if(id[i]===']'){
         count+=2
@@ -270,7 +262,7 @@ useEffect(()=>{
       for(let i = 0;i<column;i++){
         for(let j=0;j<row;j++){
           let id = "["+i+"]["+j+"]"
-          matrixinput.push(<input id={id}  type="number" className="inputmatrix" onChange={inputmat}/>)
+          matrixinput.push(<input id={id}  type="number" className="inputmatrix" onChange={inputmat} />)
           count++;
         }
         matrixinput.push(<br/>)
@@ -292,7 +284,7 @@ useEffect(()=>{
       let answerinput = []
       count=0
       for(let i =0;i<column;i++){
-        answerinput.push(<input id={count} type="number" className="inputmatrix2" onChange={inputmat2}/> )
+        answerinput.push(<input id={count} type="number" className="inputmatrix2" onChange={inputmat2} onFocus=""/> )
         count++
         answerinput.push(<br/>)
       }
@@ -434,6 +426,7 @@ useEffect(()=>{
       let ans2
       let err2
       document.getElementById("ans").innerHTML =""
+      console.log(equation)
       if(!equation)alert("Plese select equation correctly")
       else if (st === "cramer") {
         setstate(true);
@@ -645,6 +638,9 @@ useEffect(()=>{
     let holder = document.getElementById("drop");
     let input = [];
     let ar =[]
+    setrow(0)
+    setcolumn(0)
+    setcheck(false)
     // console.log(item[0])
     try{
       
@@ -702,8 +698,7 @@ useEffect(()=>{
               a = data.slice(0,count)
 
               b = data.slice(count+1,data.length)
-              // console.log(a)
-              // console.log(b)
+
               setEquation(a)
               setEquationans(b)
 
@@ -835,6 +830,7 @@ useEffect(()=>{
       )}
       {ep === 2 && (
         <div >
+          <div className="topform">
           <MathJaxContext>
             <p>
               Matrix : {mt(equation)} ,{mt(equationans)}
@@ -853,16 +849,20 @@ useEffect(()=>{
               row:
               <input
                 type="number"
+                value={row}
                 onChange={inputrow}
                 className="inputmatrix"
+                
               ></input>
             </span>
             <span>
               column:
               <input
                 type="number"
+                value={column}
                 onChange={inputcolumn}
                 className="inputmatrix"
+                
               ></input>
             </span>
             <div className="matrix">
@@ -893,6 +893,7 @@ useEffect(()=>{
               submit
             </button>
           </form>
+          </div>
           {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
             <div className="chart">
               <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
