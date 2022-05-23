@@ -48,6 +48,14 @@ function App() {
               </div>
             }
           ></Route>
+           <Route
+            path="/chapter1/secant"
+            element={
+              <div>
+                <Formcomponent states="secant" />
+              </div>
+            }
+          ></Route>
           <Route
             path="/chapter1/newton"
             element={

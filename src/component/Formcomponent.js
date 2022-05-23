@@ -8,14 +8,17 @@ import Proof from "./ch1/Proof"
 import Proof2 from "./ch2/Proof2"
 import Bisection from "./ch1/Bisection";
 import FalsePosition from "./ch1/FalsePosition";
+import Secant from "./ch1/Secant";
 import OnePoint from "./ch1/OnePoint";
 import Newtonraphson from "./ch1/Newtonraphson";
 import CramerRule from "./ch2/CramerRule"
 import Gausseliminate from "./ch2/Gausselimination";
 import GauseJordan from "./ch2/GaussJordan";
+import LU from "./ch2/LU"
 import Jacobi from "./ch2/Jacobi";
 import Gaussseidal from "./ch2/Gaussseidel";
 import Conjugate from "./ch2/Conjugate";
+import Newtondivide from "./ch3/Newtondivide"
 import Lagrange from './ch3/Lagrange'
 import Checkmultierror from './Checkmultierror'
 import ReactDOM from 'react-dom'
@@ -101,6 +104,7 @@ useEffect(()=>{
   epref.current =ep
 },[item,exeq,ep])
   const inputinter = (e)=>{
+    console.log(e.target.value)
     artemp[e.target.id] = JSON.parse(e.target.value)
     let ar =[]
     for(let i =0;i<artemp.length/2;i++){
@@ -206,13 +210,15 @@ useEffect(()=>{
       st === "bisection" ||
       st === "falseposition" ||
       st === "onepoint" ||
-      st === "newtonraphson"
+      st === "newtonraphson"||
+      st ==="secant"
     ) {
       setstate(false)
       setep(1);
       console.log("1  : ",st)
       if (document.getElementById("l")) {
-        if (st === "bisection" || st ==="falseposition") {
+        console.log(st)
+        if (st === "bisection" || st ==="falseposition"||st==="secant") {
           setleftinput("ใส่ค่าด้านซ้าย")
           setrightinput("ใส่ค่าด้านขวา")
         }  else if (st === "onepoint") {
@@ -244,6 +250,8 @@ useEffect(()=>{
     } else {
       setep(3);
       setvalue("select ex equation");
+      setinterx([])
+      setintery([])
       setEquation("");
     }
 
@@ -254,6 +262,7 @@ useEffect(()=>{
  useEffect(()=>{
   
     try{
+
       setEquation("")
       if(ep===2){
         let count = 0
@@ -294,23 +303,7 @@ useEffect(()=>{
             console.log(i)
             mat2[i] = 0;
           }
-      // if(mat2.length===0&&column>0){
-      //   console.log("case 1")
-      //   for(let i = 0;i<column;i++){
-      //     mat2[i] = 0;
-      //   }
-      // }
-      // else if(mat[0].length!==row||mat.length!==column){
-      //   console.log("case 2")
 
-      //   setmat2([])
-
-      //   let ar =[]
-      //   for(let i = 0;i<column;i++){
-      //     ar.push(0)
-      //   }
-      //   setmat2(ar)
-      // }
       ReactDOM.render(matrixinput,holder)
       ReactDOM.render(answerinput,holder2)
 
@@ -326,7 +319,10 @@ useEffect(()=>{
  useEffect(()=>{
   if(ep===3){
     try{
+      setinterx([])
+      setintery([])
       let holder = document.getElementById("inputinterpolation")
+      // holder.body.innerHTML =""
       let input =[]
       let temp2 = Array(JSON.parse(row)*2).fill(0)
   
@@ -334,14 +330,14 @@ useEffect(()=>{
             let t = j+JSON.parse(row)
 
             input.push(<div>
-              <span style={{display:"flex"}}><p>x :{j+1}</p><input id={j} type="number"  onChange={inputinter} style={{width:"80px"}} />
-                    <p>y :{j+1}</p><input id={t} type="number"  onChange={inputinter} style={{width:"80px"}} />
+              <span className="span3" style={{display:"flex"}}><p>x :{j+1}</p> <input id={j} type="number"  onChange={inputinter} style={{width:"60px"}} />
+                    <p>y :{j+1}</p> <input id={t} type="number"  onChange={inputinter} style={{width:"60px"}} />
               </span>
               <br/>
             </div>
             )
           }
-         
+        console.log(temp2)
         ReactDOM.render(input,holder)
         setartemp(temp2)
     }catch(e){
@@ -419,10 +415,19 @@ useEffect(()=>{
               seterror(nar[0][1]);
             }
         }
+        else if (st ==="secant"){
+          let l = Number(left);
+          let r = Number(right);
+          if (equation.length > 0 && left.length > 0 && right.length > 0) {
+            console.log(equation,l,r)
+            nar.push(Secant(equation.replace("x","(x)"),l,r))
+            console.log(nar)
+        }
+        }
       }
     }
     else if (ep === 2) {
-      
+      console.log(ep)
       let ans2
       let err2
       document.getElementById("ans").innerHTML =""
@@ -454,6 +459,13 @@ useEffect(()=>{
         console.log(nar[0])
         ans2=nar[0]
           
+      }
+      else if (st==="lu"){
+        setstate(true)
+        nar.push(LU(equation,equationans))
+        setanswer(nar[0])
+        ans2=nar[0]
+        console.log(nar)
       }
       else{
         console.warn(equation)
@@ -539,7 +551,7 @@ useEffect(()=>{
           alert("Please enter starting value correctly")
         }
       }
-      if (document.getElementById("ans")) {
+      if (document.getElementById("ans")&&ans2) {
         // console.log(document.getElementById("ans"));
         let holder = document.getElementById("ans");
         holder.innerHTML = "";
@@ -573,6 +585,9 @@ useEffect(()=>{
     }
     else if(ep ===3){
       // console.log(equation)
+      // console.log(interx)
+      // console.log(intery)
+      // console.log(left)
       let ar = []
       let x = left
       for(let i =0;i<equation.length;i++){
@@ -588,10 +603,15 @@ useEffect(()=>{
           
           ar.push(JSON.parse(text)-1)
         }
-
+      
       }
-
-      if(st==="lagrange"){
+      // console.log(ar)
+      if(st==="newtondivide"){
+        console.log(st)
+        nar.push(Newtondivide(interx,intery,x,ar))
+        setanswer(nar[0])
+      }
+      else if(st==="lagrange"){
 
         nar.push(Lagrange(interx,intery,x,ar))
         setanswer(nar[0])
@@ -661,6 +681,11 @@ useEffect(()=>{
         ar[i]+=JSON.stringify(item[0].ch2[i].eqans)
       }
     }
+    else if(ep===3){
+      for(let i = 0;i<item[0].ch3.length;i++){
+        ar.push(item[0].ch3[i].eq)
+      }
+    }
     ar.push("custom");
     // console.log(ar)
 
@@ -707,9 +732,22 @@ useEffect(()=>{
               setEquation(data)
               setfx(data)
             }
+            else if(ep===3){
+              
+              let Data = data.split(', ')
+              
+              Data = Data.map(data=>{
+                return JSON.parse(data)
+              })
+              setinterx(Data[0])
+              setintery(Data[1])
+              setEquation((JSON.stringify(Data[2]).slice(1)).slice(0,-1))
+              setleft(Data[3])
+            }
           }
           else if(data!==equation){
-            
+            setinterx([])
+            setintery([])
             setEquation("")
             setEquationans("")
             setfx("")
@@ -755,64 +793,66 @@ useEffect(()=>{
       </div>
       {ep === 1 && (
         <div>
-         <div className="topform">
-         <div>
-            <MathJaxContext>Question : {mt(equation)}</MathJaxContext>
-            <br />
-            Answer: {answer[answer.length - 1]}
-          </div>
-          <p> error: {error[error.length - 1]}</p>
-           <form onSubmit={onSubmitf} id="roote">
-            <div className={check ? "inputtrue" : "inputfalse"}>
-              <input
-                type="text"
-                className="input"
-                onChange={inputeq}
-                placeholder="Put the equation"
-              />
+          <div className="topform">
+            <div>
+              <MathJaxContext>Question : {mt(equation)}</MathJaxContext>
+              <br />
+              Answer: {answer[answer.length - 1]}
             </div>
+            <p> error: {error[error.length - 1]}</p>
+            <form onSubmit={onSubmitf} id="roote">
+              <div className={check ? "inputtrue" : "inputfalse"}>
+                <input
+                  type="text"
+                  className="input"
+                  onChange={inputeq}
+                  placeholder="Put the equation"
+                />
+              </div>
 
-            <div align="center">
-              <div id="l">
-                {(st === "bisection" || st === "falseposition") && (
-                  <div>
+              <div align="center">
+                <div id="l">
+                  {(st === "bisection" ||
+                    st === "falseposition" ||
+                    st === "secant") && (
+                    <div>
+                      <input
+                        className="input"
+                        type="text"
+                        onChange={inputleft}
+                        placeholder="Left input"
+                      />
+                    </div>
+                  )}
+                  {(st === "onepoint" || st === "newtonraphson") && (
+                    <div>
+                      <input
+                        className="input"
+                        type="text"
+                        onChange={inputleft}
+                        placeholder="Startvalue"
+                      />
+                    </div>
+                  )}
+                </div>
+                {st !== "newtonraphson" && st !== "onepoint" && (
+                  <div id="r">
                     <input
                       className="input"
                       type="text"
-                      onChange={inputleft}
-                      placeholder="Left input"
-                    />
-                  </div>
-                )}
-                {(st === "onepoint" || st === "newtonraphson") && (
-                  <div>
-                    <input
-                      className="input"
-                      type="text"
-                      onChange={inputleft}
-                      placeholder="Startvalue"
+                      onChange={inputright}
+                      placeholder="Right input"
                     />
                   </div>
                 )}
               </div>
-              {st !== "newtonraphson" && st !== "onepoint" && (
-                <div id="r">
-                  <input
-                    className="input"
-                    type="text"
-                    onChange={inputright}
-                    placeholder="Right input"
-                  />
-                </div>
-              )}
-            </div>
 
-            <button className="button" type="submit">
-              submit
-            </button>
-          </form>
-         </div>
-         
+              <button className="button" type="submit">
+                submit
+              </button>
+            </form>
+          </div>
+
           {typeof data[0] !== undefined && state === true && (
             <div className="chart">
               {/* {console.log("fx : ",fx)} */}
@@ -823,76 +863,74 @@ useEffect(()=>{
                 r={Number(right)}
               ></Chartcomponent2>
               <Chartcomponent dataans={data} dataerror={datae}></Chartcomponent>
-              <Proof eq={equation} x={answer[answer.length - 1]} />
+              <Proof eq={equation} x={answer[answer.length - 1]} st={st} />
             </div>
           )}
         </div>
       )}
       {ep === 2 && (
-        <div >
+        <div>
           <div className="topform">
-          <MathJaxContext>
-            <p>
-              Matrix : {mt(equation)} ,{mt(equationans)}
-            </p>
-          </MathJaxContext>
+            <MathJaxContext>
+              <p>
+                Matrix : {mt(equation)} ,{mt(equationans)}
+              </p>
+            </MathJaxContext>
 
-          <p>Answer:</p>
-          <p id="ans"></p>
+            <p>Answer:</p>
+            <p id="ans"></p>
 
-          {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
-            <p id="err"></p>
-          )}
+            {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
+              <p id="err"></p>
+            )}
 
-          <div className={check ? "inputtrue" : "inputfalse"}>
-            <span>
-              row:
-              <input
-                type="number"
-                value={row}
-                onChange={inputrow}
-                className="inputmatrix"
-                
-              ></input>
-            </span>
-            <span>
-              column:
-              <input
-                type="number"
-                value={column}
-                onChange={inputcolumn}
-                className="inputmatrix"
-                
-              ></input>
-            </span>
-            <div className="matrix">
-              <div>
-                <p>matrixA</p>
-                <div id="drawmatrix" className="matrix1" />
-              </div>
-              <div>
-                <p>matrixB</p>
-                <div id="drawmatrix2" className="matrix2" />
+            <div className={check ? "inputtrue" : "inputfalse"}>
+              <span>
+                row:
+                <input
+                  type="number"
+                  value={row}
+                  onChange={inputrow}
+                  className="inputmatrix"
+                ></input>
+              </span>
+              <span>
+                column:
+                <input
+                  type="number"
+                  value={column}
+                  onChange={inputcolumn}
+                  className="inputmatrix"
+                ></input>
+              </span>
+              <div className="matrix">
+                <div>
+                  <p>matrixA</p>
+                  <div id="drawmatrix" className="matrix1" />
+                </div>
+                <div>
+                  <p>matrixB</p>
+                  <div id="drawmatrix2" className="matrix2" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <form onSubmit={onSubmitf} id="linear">
-            {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
-              <div>
-                <input
-                  className="input"
-                  type="text"
-                  onChange={inputleft}
-                  placeholder="ใส่ค่าเริ่มต้นขั้นด้วย ,(ตามจำนวน column)"
-                />
-              </div>
-            )}
-            <br />
-            <button className="button" type="submit">
-              submit
-            </button>
-          </form>
+            <form onSubmit={onSubmitf} id="linear">
+              {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
+                <div>
+                  <input
+                    className="input"
+                    type="text"
+                    onChange={inputleft}
+                    placeholder="ใส่ค่าเริ่มต้นขั้นด้วย ,(ตามจำนวน column)"
+                  />
+                </div>
+              )}
+              <br />
+              <button className="button" type="submit">
+                submit
+              </button>
+            </form>
           </div>
           {(st === "jacobi" || st === "seidal" || st === "conjugate") && (
             <div className="chart">
@@ -913,25 +951,37 @@ useEffect(()=>{
 
       {ep === 3 && (
         <div>
-          <span>
-            จำนวน x :
-            <input
-              type="number"
-              onChange={inputrow}
-              className="inputmatrix"
-            ></input>
-          </span>
-          <div id="inputinterpolation" />
+          <br />
+          <div className={check ? "inputtrue" : "inputfalse"}>
+            <span>
+              จำนวน x :
+              <input
+                type="number"
+                onChange={inputrow}
+                className="inputmatrix"
+              ></input>
+            </span>
+            <div id="inputinterpolation" />
+          </div>
           <form onSubmit={onSubmitf}>
-            <span>
-              <p>เลือกจุดที่ต้องการใช้</p>
-              <input type="text" onChange={inputeq}></input>
-            </span>
-            <span>
-              <p>ใส่ค่า X </p>
-              <input type="text" onChange={inputleft}></input>
-            </span>
+            <div className={check ? "inputtrue" : "inputfalse"}>
+              <span>
+                <p>เลือกจุดที่ต้องการใช้</p>
+                <input type="text" onChange={inputeq}></input>
+              </span>
+              <span>
+                <p>ใส่ค่า X </p>
+                <input type="text" onChange={inputleft}></input>
+              </span>
+            </div>
             <br />
+            <h5>X = {JSON.stringify(interx)}</h5>
+            <h5>Y = {JSON.stringify(intery)}</h5>
+            <div className={check ? "inputfalse" : "inputtrue"}>
+              <h5>selected x = {equation}</h5>
+              <h5>x value = {left}</h5>
+            </div>
+            <h4> answer = {answer}</h4>
             <button className="button" type="submit">
               confirm
             </button>

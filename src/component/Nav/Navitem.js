@@ -23,6 +23,19 @@ export const Navitem=[
         path:"/chapter3/newtondivide",
         cName:"nav-item",
     },
+    {
+        id:5,
+        title:"Least-Squares Regression",
+        path:"/chapter4/linearregression",
+        cName:"nav-item"
+    },
+    {
+        id:6,
+        title:"Numerical Intregration and Differentiation",
+        path:"/chapter5/singletrapezoidal",
+        cName:"nav-item"
+    },
+ 
     
 ]
 export const Dropdownitems =[
@@ -51,6 +64,12 @@ export const Dropdownitems =[
                 id:4,
                 title:"Newton Raphson",
                 path:"/chapter1/newton",
+                cName:"submenu"
+            },
+            {
+                id:5,
+                title:"Secant",
+                path:"/chapter1/secant",
                 cName:"submenu"
             },
         ]

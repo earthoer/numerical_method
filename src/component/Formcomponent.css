@@ -44,14 +44,14 @@ td{
 .chart{
   width: 65%;
   margin:20px;
-  
+  /* padding:50px ; */
 }
 .topform{
   background-color: rgba(255, 255, 255, 0.901);
   width:500px;
   box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 25px -25px;;
-  /* margin:-1px; */
-  padding:0px 5px 2px 1px;
+  margin:10px 0px 0px 0px;
+  padding:5px 5px 2px 1px;
   /* opacity:90%; */
 }
 .dropd_drop{
@@ -66,7 +66,7 @@ td{
     padding:4px;
     margin:2px;
     box-shadow: 2px 2px 3px rgba(0,0,0,1); 
-    
+
   }
 .inputmatrix2{
     width:27px;
@@ -147,4 +147,8 @@ td{
 .button:active {
   box-shadow: #D6D6E7 0 3px 7px inset;
   transform: translateY(0.85px);
+}
+.span3{
+  justify-content:center;
+  align-items: center;
 }
