@@ -26,6 +26,7 @@ const Navbar = ()=>{
                     onMouseLeave={() => {
                       setdropdown1(false);
                     }}
+                    data-testid={item.title}
                   >
                     {dropdown1 && <Dropdown className="test" ep="0" />}
                     <Link to={item.path}>{item.title}</Link>

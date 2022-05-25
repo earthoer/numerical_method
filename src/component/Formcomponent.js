@@ -653,6 +653,7 @@ useEffect(()=>{
     }
   }
   useEffect(() => {
+    console.log("test")
     setEquationans([])
     setstate(false)
     let holder = document.getElementById("drop");
@@ -668,10 +669,15 @@ useEffect(()=>{
       for (let i = 0; i < item[0].onepoint.length; i++) {
         ar.push(item[0].onepoint[i].eq);
       }
+      setEquation(ar[0])
+      setfx(ar[0])
     } else if (ep === 1) {
       for (let i = 0; i < item[0].ch1.length; i++) {
         ar.push(item[0].ch1[i].eq);
+        // console.log(item[0].ch1[i].eq)
       }
+      setEquation(ar[0])
+      setfx(ar[0])
     }
     else if(ep===2){
       for(let i = 0;i<item[0].ch2.length;i++){
@@ -680,85 +686,112 @@ useEffect(()=>{
         ar[i]+="*"
         ar[i]+=JSON.stringify(item[0].ch2[i].eqans)
       }
+      let a  =[]
+      let b = []
+      let count=0
+      for(let i = 0;i<ar[0].length;i++){
+        if(ar[0][i]==="*"){
+          break;
+        }
+        count++;
+      }
+      a = ar[0].slice(0,count)
+
+      b = ar[0].slice(count+1,ar[0].length)
+      setEquation(a)
+      setEquationans(b)
     }
     else if(ep===3){
       for(let i = 0;i<item[0].ch3.length;i++){
         ar.push(item[0].ch3[i].eq)
       }
+      let Data = ar[0].split(', ')
+            
+            Data = Data.map(data=>{
+              return JSON.parse(data)
+            })
+            setinterx(Data[0])
+            setintery(Data[1])
+            setEquation((JSON.stringify(Data[2]).slice(1)).slice(0,-1))
+            setleft(Data[3])
     }
     ar.push("custom");
-    // console.log(ar)
-
 
 
     }
     catch (e){
     }
-
+    console.log(ar)
     input.push(
-      <Dropd
-        placeholder={value}
-        list={ar}
-        // ref={(s)=>{setvalue(s)}}
-        className="dropd_drop"
-        onItemChange={(data) => {
-          setstate(false)
-          if (data !== "custom") {
-            setcheck(false)
-            if(ep===1){
-              // console.log(data.replace("x","(x)"))
-              setEquation(data);
-              setfx(data)
-            }
-            else if(ep===2){
-              let a  =[]
-              let b = []
-              let count=0
-              for(let i = 0;i<data.length;i++){
-                if(data[i]==="*"){
-                  break;
-                }
-                count++;
+      <select data-testid="select-option" 
+      onChange={(data)=>{
+        
+        data=data.target.value
+        console.log(data)
+        setstate(false)
+        if (data !== "custom") {
+          setcheck(false)
+          if(ep===1){
+            setEquation(data);
+            setfx(data)
+          }
+          else if(ep===2){
+            let a  =[]
+            let b = []
+            let count=0
+            for(let i = 0;i<data.length;i++){
+              if(data[i]==="*"){
+                break;
               }
-              a = data.slice(0,count)
-
-              b = data.slice(count+1,data.length)
-
-              setEquation(a)
-              setEquationans(b)
-
+              count++;
             }
-            else if (st==="onepoint"){
-              setEquation(data)
-              setfx(data)
-            }
-            else if(ep===3){
-              
-              let Data = data.split(', ')
-              
-              Data = Data.map(data=>{
-                return JSON.parse(data)
-              })
-              setinterx(Data[0])
-              setintery(Data[1])
-              setEquation((JSON.stringify(Data[2]).slice(1)).slice(0,-1))
-              setleft(Data[3])
-            }
+            a = data.slice(0,count)
+
+            b = data.slice(count+1,data.length)
+
+            setEquation(a)
+            setEquationans(b)
+
           }
-          else if(data!==equation){
-            setinterx([])
-            setintery([])
-            setEquation("")
-            setEquationans("")
-            setfx("")
+          else if (st==="onepoint"){
+            setEquation(data)
+            setfx(data)
           }
-          if(data===""||data==="custom"){
-            setcheck(true)
+          else if(ep===3){
+            
+            let Data = data.split(', ')
+            
+            Data = Data.map(data=>{
+              return JSON.parse(data)
+            })
+            setinterx(Data[0])
+            setintery(Data[1])
+            setEquation((JSON.stringify(Data[2]).slice(1)).slice(0,-1))
+            setleft(Data[3])
           }
         }
-        
-      }
-      />
+        else if(data!==equation){
+          setinterx([])
+          setintery([])
+          setEquation("")
+          setEquationans("")
+          setfx("")
+        }
+        if(data===""||data==="custom"){
+          setcheck(true)
+        }
+
+      }} 
+      // value={selecteq}
+      >
+         {
+         ar.map(data => (
+          //  console.log(data)
+              <option value={data}>{data}</option>
+           ))
+           }
+      </select>
+      
     )
     ReactDOM.render(input,holder)
   }, [ep, st,item]);
@@ -856,7 +889,7 @@ useEffect(()=>{
           {typeof data[0] !== undefined && state === true && (
             <div className="chart">
               {/* {console.log("fx : ",fx)} */}
-
+              {/* {console.log(fx)} */}
               <Chartcomponent2
                 fx={fx.replace("x", "(x)")}
                 l={Number(left)}
