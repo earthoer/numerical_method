@@ -7,7 +7,7 @@ WORKDIR /app
 #copy all file to docker direc
 COPY ./ ./
 COPY package.json ./
-COPY webpack.config.js ./tempwebpack.txt
+COPY ./src/webpack.config.js ./tempwebpack.txt
 #install  all dependencies
 RUN npm i
 
