@@ -59,8 +59,8 @@ const Formcomponent = (states) => {
   const [ep,setep] = useState(1)
   const [value,setvalue] = useState("select ex equation")
   const epref = useRef(ep)
-  const API_URL ='http://localhost:3001/items'
-  const API_LOGIN ='http://localhost:3001/login'
+  const API_URL ='https://numerapi.herokuapp.com/items'
+  const API_LOGIN ='https://numerapi.herokuapp.com/login'
   const axios = require('axios')
   useEffect(()=>{
     const fetchitem = async ()=> {

@@ -3,7 +3,7 @@
 /* eslint-disable testing-library/no-wait-for-side-effects */
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
-
+const axios = require('axios')
 test('renders learn react link', () => {
   render(<App />);
 });
@@ -66,51 +66,13 @@ test('user can go to newtondivde after goto bisection',()=>{
   fireEvent.click(screen.getByText("Newton Divide Method"))
   expect(screen.getByText("newtondivide")).toBeInTheDocument();
 })
-// test('user can use bisection',()=>{
-//   render(<App />)
-//   fireEvent.mouseOver(screen.getByText("Root of Equation"))
-//   fireEvent.click(screen.getByText("Bisection"))
-//   fireEvent.change(,{target:{value:''}})
-//   expect(screen.getByText("falseposition")).toBeInTheDocument();
 
-// })
 
- test('user can use dropdown',async ()=>{
-    render(<App />)
-    fireEvent.mouseOver(screen.getByText("Root of Equation"))
-    fireEvent.click(screen.getByText("Bisection"))
-    // fireEvent.click(screen.getByTestId("select-option"))
-    fireEvent.change(screen.getByTestId("select-option") ,{
-      target:{value:"x^4-13"}
+test('api is active', async () =>{
+  await axios.post('https://numerapi.herokuapp.com/login', {
+        email: "earthgodna@gmail.com",
+        password: "0836054655"
+    }).then((response) => {
+      expect(response).toBeDefined();
     })
-
-    await waitFor(()=>{
-      // expect(screen.queryByText("43*x-1")).not.toBeInTheDocument()
-      expect(screen.getByText("x^4-13")).toBeInTheDocument()
-    })
-    
-    await waitFor(()=>{
-      expect((screen.getByTestId("select-option")).value).toEqual("x^4-13")
-    })
-    // fireEvent.click(screen.getByText("43*x-1"))
-    // await waitFor(()=>{
-      
-    //   expect(screen.getByText("Question : 43*x-1")).toBeInTheDocument()
-    // })
-    
-  
-  })
-// test('user can use newton divide',async ()=>{
-//   render(<App />)
-//   fireEvent.mouseOver(screen.getByText("Interpolation and Extrapolation"))
-//   fireEvent.click(screen.getByText("Newton Divide Method"))
-//   // fireEvent.click(screen.getByText("select ex equation"))
-//   fireEvent.change(screen.getByText("select ex equation"),{target:{value:"[2,3,4], [0.2239,-0.2601,-0.3971], [1,2], 3.2"}})
-//   await waitFor(()=>{
-//     expect(screen.getByText("[2,3,4], [0.2239,-0.2601,-0.3971], [1,2], 3.2")).toBeInTheDocument()
-//   })
-//   fireEvent.click(screen.getByText("[2,3,4], [0.2239,-0.2601,-0.3971], [1,2], 3.2"))
-//   await waitFor(()=>{
-//     expect(screen.getByText("X : [2,3,4]")).toBeInTheDocument()
-//   })
-// })
+},60000)
