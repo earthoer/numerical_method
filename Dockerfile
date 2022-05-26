@@ -14,5 +14,5 @@ RUN npm i
 #npm start
 CMD ["npm","start"]
 
-#docker build -f Dockerfile -t client_numer .
+#docker build  -t client_numer .
 #docker run -it -p 3000:3000 client_numer

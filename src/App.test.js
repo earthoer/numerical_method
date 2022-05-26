@@ -75,31 +75,31 @@ test('user can go to newtondivde after goto bisection',()=>{
 
 // })
 
-//  test('user can use dropdown',async ()=>{
-//     render(<App />)
-//     fireEvent.mouseOver(screen.getByText("Root of Equation"))
-//     fireEvent.click(screen.getByText("Bisection"))
-//     // fireEvent.click(screen.getByTestId("select-option"))
-//     fireEvent.change(screen.getByTestId("select-option") ,{
-//       target:{value:"x^4-13"}
-//     })
+ test('user can use dropdown',async ()=>{
+    render(<App />)
+    fireEvent.mouseOver(screen.getByText("Root of Equation"))
+    fireEvent.click(screen.getByText("Bisection"))
+    // fireEvent.click(screen.getByTestId("select-option"))
+    fireEvent.change(screen.getByTestId("select-option") ,{
+      target:{value:"x^4-13"}
+    })
 
-//     await waitFor(()=>{
-//       // expect(screen.queryByText("43*x-1")).not.toBeInTheDocument()
-//       expect(screen.getByText("x^4-13")).toBeInTheDocument()
-//     })
+    await waitFor(()=>{
+      // expect(screen.queryByText("43*x-1")).not.toBeInTheDocument()
+      expect(screen.getByText("x^4-13")).toBeInTheDocument()
+    })
     
-//     await waitFor(()=>{
-//       expect((screen.getByTestId("select-option")).value).toEqual("x^4-13")
-//     })
-//     // fireEvent.click(screen.getByText("43*x-1"))
-//     // await waitFor(()=>{
+    await waitFor(()=>{
+      expect((screen.getByTestId("select-option")).value).toEqual("x^4-13")
+    })
+    // fireEvent.click(screen.getByText("43*x-1"))
+    // await waitFor(()=>{
       
-//     //   expect(screen.getByText("Question : 43*x-1")).toBeInTheDocument()
-//     // })
+    //   expect(screen.getByText("Question : 43*x-1")).toBeInTheDocument()
+    // })
     
   
-//   })
+  })
 // test('user can use newton divide',async ()=>{
 //   render(<App />)
 //   fireEvent.mouseOver(screen.getByText("Interpolation and Extrapolation"))
