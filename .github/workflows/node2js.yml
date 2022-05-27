@@ -51,20 +51,20 @@ jobs:
             file: ./Dockerfile
             push: true
             tags: ${{ secrets.DOCKER_HUB_USERNAME }}/client_numer:latest
-        - name: Set-up Node
-          uses: actions/setup-node@v1
-          with:
-            node-version: "17.x"
-        - run: npm install react-scripts
-        - run: npm install
-        - run: npm test
-        - name: Deploy
-          uses: crazy-max/ghaction-github-pages@v1
-          with: 
-            target_branch: gh-pages
-            build_dir: build
-          env:
-            GITHUB_TOKEN: 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
+#         - name: Set-up Node
+#           uses: actions/setup-node@v1
+#           with:
+#             node-version: "17.x"
+#         - run: npm install react-scripts
+#         - run: npm install
+#         - run: npm test
+#         - name: Deploy
+#           uses: crazy-max/ghaction-github-pages@v1
+#           with: 
+#             target_branch: gh-pages
+#             build_dir: build
+#           env:
+#             GITHUB_TOKEN: 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
         
         
         
