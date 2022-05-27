@@ -17,8 +17,8 @@ const Jacobi = (equation,equationans,left)=>{
     let old = 0;
     let i =0;
     while(Checkmultierror(error,eps)){
-      // console.log("error : ",error)
-      // console.log("x : ",x)
+      // 
+      // 
       if(state ===5||i===100){
         break;
       }
@@ -32,8 +32,8 @@ const Jacobi = (equation,equationans,left)=>{
           }
         }
         xn[i]/=eq[i][i]
-        // console.log(xn[i])
-        // console.log(x[i])
+        // 
+        // 
         error[i]=geterror(xn[i],x[i])
       }
       
@@ -55,7 +55,7 @@ const Jacobi = (equation,equationans,left)=>{
       i++;
     }
     let re =  []
-    console.log(er)
+    
     re.push(ar)
     re.push(er)
     re.push(x)

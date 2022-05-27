@@ -22,18 +22,18 @@ const Newtonraphson = (equation,left)=>{
       } else {
         let teq = equation;
         teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-        console.log(teq);
+        
         eq = "x-" + teq;
       }
       eqt = parse(eq);
     } else {
       eqt = parse(equation);
     }
-    console.log(eqt.toString());
+    
     let s = Number(left);
     let x = s;
     let div = derivative(eqt, "x");
-    console.log("div : ", div.toString());
+    
     let deltax = -(eqt.evaluate({ x: x }) / div.evaluate({ x: x }));
     let newx = x + deltax;
     e = geterror(newx, x);
@@ -47,7 +47,7 @@ const Newtonraphson = (equation,left)=>{
       x = newx;
       ans = x;
       const data = [{ x: x }, { deltax: deltax }, { e, e }];
-      console.log(data);
+      
       const er = e;
       if (i > 0) {
         if (abs(er - temp) < 0.00005) {
@@ -59,7 +59,7 @@ const Newtonraphson = (equation,left)=>{
       }
       i++;
       if (state >= 5) {
-        console.log("case 3");
+        
         break;
       }
       ar1.push(ans);

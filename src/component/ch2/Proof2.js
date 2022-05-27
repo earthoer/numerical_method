@@ -3,7 +3,7 @@ import {MathJax,MathJaxContext} from "better-react-mathjax"
 import ReactDOM from 'react-dom'
 import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index,row,column,transpose, ConditionalNodeDependencies} from "mathjs";
 const Proof2 = (eq)=>{
-    console.log(eq)
+    
     // const equation = parse(eq.eq.replace("x","(x)"))
     let x = "["
     for(let i = 0;i<JSON.parse(eq.equation).length;i++){
@@ -21,7 +21,7 @@ const Proof2 = (eq)=>{
       let str = ""
       for(let i = 0 ;i<equation[0].length;i++){
         str+="("+equation[j][i]+"*"+eq.ans[i]+")+"
-        // console.log(equation[j][i]+"*"+eq.ans[i])
+        // 
       }
       str = str.slice(0,-1)
       html.push(<p>{str} = {evaluate(str)}<br/></p>)

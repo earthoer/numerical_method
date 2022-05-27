@@ -46,14 +46,14 @@ import {
     let data =[]
     let labels = []
     let Data = []
-    console.log(fx)
-    // console.log(l," ",r)
+    
+    // 
     let count =0;
     if(fx.length>0){
         for(let i =-40; i<41;i+=1){
                 labels.push(i)
                 data.push(Fx.evaluate({x:i}))
-                // console.log("labels : ",labels[count],"f(x) = ",Fx.toString()," = ",Fx.evaluate({x:i}))
+                // 
             count++;
         }
         Data = {
@@ -186,7 +186,6 @@ import {
               type="line"
               height={650}
             />
-            {/* {console.log(Data.seriesLine)} */}
             <Chart
               // className="chart"
               options={Data.optionsLine}

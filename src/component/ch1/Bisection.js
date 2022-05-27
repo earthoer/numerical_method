@@ -24,7 +24,7 @@ const Bisection = (equation,l,r) =>{
       } else {
         let teq = equation;
         teq = teq.splice(0, "(").splice(teq.length + 1, ")");
-        console.log(teq);
+        
         eq = "x-" + teq;
       }
       eqt = parse(eq);

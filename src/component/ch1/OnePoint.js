@@ -17,28 +17,28 @@ const OnePoint =(equation,left)=>{
     let ar1=[]
     let ar2=[]
     if (equation.indexOf("x") < 0) {
-      console.log("not x ");
-      console.log(equation.indexOf("x") > 0);
+      
+      
       if (equation[0] === "-") {
         let teq = equation.substring(1);
-        console.log(teq)
+        
         teq = teq.splice(0, "(").splice(teq.length + 1, ")");
         eq = "x+" + teq;
       } else {
         let teq = equation;
-        console.log(teq)
+        
         teq = teq.splice(0, "(").splice(teq.length + 1, ")");
         eq = "x-" + teq;
       }
       eqt = parse(eq);
     } else {
-      console.log(equation.indexOf("x"));
+      
       eqt = parse(equation);
     }
 
     const l = left;
     let x = parseFloat(l);
-    console.log(eqt.toString());
+    
     while (e > eps) {
       old = x;
       x = eqt.evaluate({ x: x });
@@ -56,7 +56,7 @@ const OnePoint =(equation,left)=>{
       }
       i++;
       if (state >= 5) {
-        console.log("case 3");
+        
         break;
       }
       ar1.push(ans);

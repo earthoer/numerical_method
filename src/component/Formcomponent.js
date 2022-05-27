@@ -72,11 +72,11 @@ const Formcomponent = (states) => {
         }).then(response =>{
           key = response.data.accessToken;
         }).catch(error=>{
-          console.log(error.response.data.error)
+          
         })
 
 
-        // console.log(key)
+        // 
         await axios.get(API_URL
           ,{
           headers: {
@@ -87,10 +87,10 @@ const Formcomponent = (states) => {
         .then(response=>{
           setitem(response.data)
         }).catch(error=>{
-          console.log(error)})
+          
+        })
       }
       catch (e){
-        console.log(e.stack)
       }
     }
 
@@ -104,7 +104,7 @@ useEffect(()=>{
   epref.current =ep
 },[item,exeq,ep])
   const inputinter = (e)=>{
-    console.log(e.target.value)
+    
     artemp[e.target.id] = JSON.parse(e.target.value)
     let ar =[]
     for(let i =0;i<artemp.length/2;i++){
@@ -125,23 +125,23 @@ useEffect(()=>{
     let id1 =""
     let id2 =""
     let count =1;
-    console.log(e.target.value)
+    
     for(let i = 1;i<id.length;i++){
       if(id[i]===']'){
         count+=2
         break;
       }
-      // console.log(id[i])
+      // 
       id1+=id[i]
       count++;
     }
     for(let i = count;i<id.length;i++){
       if(id[i]===']')break;
-      // console.log(id[i])
+      // 
       id2+=id[i]
     }
-    // console.log("id1 : ",id1," count ",count)
-    // console.log("id2 : ",id2)
+    // 
+    // 
     mat[JSON.parse(id1)][JSON.parse(id2)] = Number(e.target.value)
     setmat(mat)
     setEquation(JSON.stringify(mat))
@@ -150,7 +150,7 @@ useEffect(()=>{
   const inputmat2 = (e)=>{
     
     mat2[e.target.id] = Number(e.target.value)
-    // console.log(mat2)
+    // 
     setmat2(mat2)
     setEquationans(JSON.stringify(mat2))
     
@@ -169,7 +169,7 @@ useEffect(()=>{
     setstate(false)
   };
   const inputtemp = (e) => {
-    console.log(e.target.value)
+    
     settemp(e.target.value);
   };
   const inputleft = (e) => {
@@ -215,9 +215,9 @@ useEffect(()=>{
     ) {
       setstate(false)
       setep(1);
-      console.log("1  : ",st)
+      
       if (document.getElementById("l")) {
-        console.log(st)
+        
         if (st === "bisection" || st ==="falseposition"||st==="secant") {
           setleftinput("ใส่ค่าด้านซ้าย")
           setrightinput("ใส่ค่าด้านขวา")
@@ -240,7 +240,7 @@ useEffect(()=>{
       st === "conjugate"
     ) {
       setep(2);
-      console.log("2 : ",st)
+      
       try {
         
         
@@ -276,7 +276,7 @@ useEffect(()=>{
         }
         matrixinput.push(<br/>)
       }
-      console.log(mat)
+      
 
       setmat([])
 
@@ -287,7 +287,7 @@ useEffect(()=>{
             }
             mat[i]=artemp;
           }
-      console.log(mat)
+      
       
       let holder2 = document.getElementById("drawmatrix2")
       let answerinput = []
@@ -300,7 +300,7 @@ useEffect(()=>{
 
       setmat2([])
       for(let i = 0;i<column;i++){
-            console.log(i)
+            
             mat2[i] = 0;
           }
 
@@ -310,7 +310,7 @@ useEffect(()=>{
       
       }
     }catch(e){
-      console.log(e)
+      
     }
     
  },[row,column])
@@ -337,11 +337,11 @@ useEffect(()=>{
             </div>
             )
           }
-        console.log(temp2)
+        
         ReactDOM.render(input,holder)
         setartemp(temp2)
     }catch(e){
-      console.log(e)
+      
     }
   }
 },[row])
@@ -350,7 +350,7 @@ useEffect(()=>{
     let count=0
     for(let i=0;i<data.length;i++){
       if(data[i]==','){
-        console.log(data[i+1])
+        
         if(!data[i+1]) return false;
         else if(data[i+1]==',')return false;
         else if(data.length<i+1)return false
@@ -358,7 +358,7 @@ useEffect(()=>{
       }
       
     }
-    // console.log(count,col)
+    // 
     if(count==col-1)return true
     return false;
   }
@@ -388,7 +388,7 @@ useEffect(()=>{
           if (equation.length > 0 && left.length > 0 && right.length > 0) {
               nar.push(Bisection(equation.replace("x","(x)"),l,r))
               // Chartcomponent2(nar[0][0][nar[0][0].length-1])
-              console.log(nar[0][0])
+              
               setanswer(nar[0][0]);
               seterror(nar[0][1]);
     
@@ -419,24 +419,24 @@ useEffect(()=>{
           let l = Number(left);
           let r = Number(right);
           if (equation.length > 0 && left.length > 0 && right.length > 0) {
-            console.log(equation,l,r)
+            
             nar.push(Secant(equation.replace("x","(x)"),l,r))
-            console.log(nar)
+            
         }
         }
       }
     }
     else if (ep === 2) {
-      console.log(ep)
+      
       let ans2
       let err2
       document.getElementById("ans").innerHTML =""
-      console.log(equation)
+      
       if(!equation)alert("Plese select equation correctly")
       else if (st === "cramer") {
         setstate(true);
           let eq = JSON.parse(equation);
-          console.log(st)
+          
           const eqans = JSON.parse(equationans);
           nar.push(CramerRule(eq,eqans))
           setanswer(nar[0])
@@ -445,18 +445,18 @@ useEffect(()=>{
       }
       else if(st==="gauseeliminate"){
         setstate(true);
-        console.log(st)
+        
         nar.push(Gausseliminate(equation,equationans))
-        console.log(nar)
+        
         setanswer(nar[0])
         ans2 = nar[0]
       }
       else if(st==="gaussjordan"){
         setstate(true);
-        console.log(st)
+        
         nar.push(GauseJordan(equation,equationans))
         setanswer(nar[0])
-        console.log(nar[0])
+        
         ans2=nar[0]
           
       }
@@ -465,7 +465,7 @@ useEffect(()=>{
         nar.push(LU(equation,equationans))
         setanswer(nar[0])
         ans2=nar[0]
-        console.log(nar)
+        
       }
       else{
         console.warn(equation)
@@ -476,7 +476,7 @@ useEffect(()=>{
         else if(checkleft(left,JSON.parse(equation)[0].length)){
           setstate(true)
           if(st==="jacobi"){
-            // console.log(equation,equationans,left)
+            // 
             nar.push(Jacobi(equation,equationans,left))
             
             let temp = transpose(nar[0][1])
@@ -542,7 +542,7 @@ useEffect(()=>{
             seterr(z[z.length-1])
             seterror(z)
             setanswer(ans)
-            console.log(ans)
+            
             ans2= ans
             err2 = z[z.length-1]
           }
@@ -552,10 +552,10 @@ useEffect(()=>{
         }
       }
       if (document.getElementById("ans")&&ans2) {
-        // console.log(document.getElementById("ans"));
+        // 
         let holder = document.getElementById("ans");
         holder.innerHTML = "";
-        console.log(ans2);
+        
         for (let i = 0; i < ans2.length; i++) {
           let a = i + 1;
           holder.innerHTML +=
@@ -569,25 +569,25 @@ useEffect(()=>{
           if (st !== "conjugate") {
             for (let i = 0; i < err2.length; i++) {
               let a = i + 1;
-              // console.log(error)
+              // 
               holder.innerHTML +=
                 "Error" + a + " = " + JSON.parse(err2[i]).toFixed(10) + " ";
             }
           } else {
-            // console.log(error);
+            // 
             holder.innerHTML +=
               "Error = " + JSON.parse(err2);
           }
         } catch (e) {
-          console.log(e.stack);
+          
         }
       }
     }
     else if(ep ===3){
-      // console.log(equation)
-      // console.log(interx)
-      // console.log(intery)
-      // console.log(left)
+      // 
+      // 
+      // 
+      // 
       let ar = []
       let x = left
       for(let i =0;i<equation.length;i++){
@@ -605,9 +605,9 @@ useEffect(()=>{
         }
       
       }
-      // console.log(ar)
+      // 
       if(st==="newtondivide"){
-        console.log(st)
+        
         nar.push(Newtondivide(interx,intery,x,ar))
         setanswer(nar[0])
       }
@@ -615,7 +615,7 @@ useEffect(()=>{
 
         nar.push(Lagrange(interx,intery,x,ar))
         setanswer(nar[0])
-        // console.log(nar[0])
+        // 
       }
     }
   };
@@ -642,7 +642,7 @@ useEffect(()=>{
   for (let i = 0; i < answer.length; i++) {
     data.push( JSON.parse(JSON.stringify(answer[i].toFixed(6))));
   }
-  // console.log(data)
+  // 
   for (let i = 0; i < error.length; i++) {
     datae.push(error[i]);
   }
@@ -653,7 +653,7 @@ useEffect(()=>{
     }
   }
   useEffect(() => {
-    console.log("test")
+    
     setEquationans([])
     setstate(false)
     let holder = document.getElementById("drop");
@@ -662,7 +662,7 @@ useEffect(()=>{
     setrow(0)
     setcolumn(0)
     setcheck(false)
-    // console.log(item[0])
+    // 
     try{
       
     if (st === "onepoint") {
@@ -674,14 +674,14 @@ useEffect(()=>{
     } else if (ep === 1) {
       for (let i = 0; i < item[0].ch1.length; i++) {
         ar.push(item[0].ch1[i].eq);
-        // console.log(item[0].ch1[i].eq)
+        // 
       }
       setEquation(ar[0])
       setfx(ar[0])
     }
     else if(ep===2){
       for(let i = 0;i<item[0].ch2.length;i++){
-        // console.log(item[0].ch2[i].eq)
+        // 
         ar.push(JSON.stringify(item[0].ch2[i].eq))
         ar[i]+="*"
         ar[i]+=JSON.stringify(item[0].ch2[i].eqans)
@@ -721,13 +721,13 @@ useEffect(()=>{
     }
     catch (e){
     }
-    console.log(ar)
+    
     input.push(
       <select data-testid="select-option" 
       onChange={(data)=>{
         
         data=data.target.value
-        console.log(data)
+        
         setstate(false)
         if (data !== "custom") {
           setcheck(false)
@@ -786,7 +786,7 @@ useEffect(()=>{
       >
          {
          ar.map(data => (
-          //  console.log(data)
+          //  
               <option value={data}>{data}</option>
            ))
            }
@@ -799,7 +799,7 @@ useEffect(()=>{
 
 
 
-  // console.log(exeq)
+  // 
   const mt = (eq) => {
     try {
       return (
@@ -888,8 +888,7 @@ useEffect(()=>{
 
           {typeof data[0] !== undefined && state === true && (
             <div className="chart">
-              {/* {console.log("fx : ",fx)} */}
-              {/* {console.log(fx)} */}
+          
               <Chartcomponent2
                 fx={fx.replace("x", "(x)")}
                 l={Number(left)}

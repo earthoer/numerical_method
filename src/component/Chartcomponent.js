@@ -72,7 +72,7 @@ const Chartcomponent = ({ dataerror, dataans }) => {
       
     };
   }catch(e){
-    console.log(e);
+    
   }
 
 
@@ -100,7 +100,7 @@ const Chartcomponent = ({ dataerror, dataans }) => {
       }
     } else {
       let x1 = Object.keys(dataans).map((e) => Number(dataans[e]));
-      // console.log(x1)
+      // 
       dataset.push({
         label: "X",
         data: x1,

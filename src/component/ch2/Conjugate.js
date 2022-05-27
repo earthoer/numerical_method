@@ -3,7 +3,7 @@ import { subtract,evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,
 
 const Conjugate = (equation,equationans,x)=>{
     function getr(mata,matx,matb){
-        // console.log("matx : "+parse(matx.toString()))
+        // 
         return subtract(multiply(mata,matx),matb)
     }
     function getdelta(d,r,mata){
@@ -54,7 +54,7 @@ const Conjugate = (equation,equationans,x)=>{
         d = getd(r,alpha,d)
 
     }
-    // console.log(matx.data[0])
+    // 
     ar.push(matx.toString())
     ar.push(data)
     ar.push(errordata)

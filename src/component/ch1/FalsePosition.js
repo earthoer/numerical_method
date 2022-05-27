@@ -34,8 +34,8 @@ const FalsePosition = (equation,l,r) =>{
     }
 
     while (e > eps) {
-      console.log(eqt.toString())
-      console.log(e)
+      
+      
       let fl = eqt.evaluate({ x: l });
       let fr = eqt.evaluate({ x: r });
       let x = getfalsepos(l, r, fl, fr);

@@ -7,7 +7,7 @@ const CramerRule = (eq,eqans)=>{
           let rows = mata.size()[0];
           let columns = mata.size()[1];
           let deta = det(mata);
-          console.log(deta)
+          
           let ar = []
           for (let i = 0; i < rows; i++) {
             let matc = JSON.parse(JSON.stringify(eq));
@@ -19,7 +19,7 @@ const CramerRule = (eq,eqans)=>{
             let ans = detc/deta
             ar.push(ans)
           } 
-    console.log(ar)
+    
     return (
         ar
         )

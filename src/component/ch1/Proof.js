@@ -2,7 +2,7 @@ import "./Proof.css"
 import {MathJax,MathJaxContext} from "better-react-mathjax"
 import { evaluate,parse,sqrt,abs,derivative,format,matrix,det,multiply,subset,index,row,column,transpose, ConditionalNodeDependencies} from "mathjs";
 const Proof = (eq)=>{
-    console.log(eq)
+    
     let equation 
     eq.st==="onepoint"? equation = parse(eq.eq.replace("x","(x)")+"-(x)"): equation = parse(eq.eq.replace("x","(x)"))
     
@@ -23,7 +23,7 @@ const Proof = (eq)=>{
           return <MathJax dynamic>{e.toString}</MathJax>;
         }
       };
-      console.log(eq.st)
+      
     return (
         <div>
           {eq.st==="onepoint"&&(<div className="Proof">
