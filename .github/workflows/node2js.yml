@@ -25,7 +25,11 @@ jobs:
 
         - name: Install packages
           run: yarn install --frozen-lockfile
-
+        
+        - name: Test
+          run: npm test
+          env:
+            CI: true
      
             
         - name: Checkout 
