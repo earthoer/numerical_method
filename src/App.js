@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import "./App.css";
 
-import { Link, Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import { Link, Route, Routes, HashRouter as Router } from "react-router-dom";
 import Chapter1 from "./component/ch1/Chapter1";
 import Chapter2 from "./component/ch2/Chapter2";
 
