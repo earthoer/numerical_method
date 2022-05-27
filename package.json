@@ -50,6 +50,7 @@
     "start": "react-scripts start",
     "start:server": "json-server --watch -p 3001 data/db.json -m ./node_modules/json-server-auth -r ./data/route.json ",
     "build": "react-scripts build",
+    "deploy":"gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -73,6 +74,7 @@
   },
   "devDependencies": {
     "faker": "^6.6.6",
+    "gh-pages": "^4.0.0",
     "html-webpack-plugin": "^5.5.0"
   },
   "browser": {
