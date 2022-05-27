@@ -1,6 +1,7 @@
 {
-  "homepage":"https://earthoer.github.io/numerical_method",
+  
   "name": "numer",
+  "homepage":"https://earthoer.github.io/numerical_method",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
