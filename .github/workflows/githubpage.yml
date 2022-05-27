@@ -23,6 +23,7 @@ jobs:
 
 
       - run: npm i
+      - run: npm deploy
 
 
       - name: Deploy
